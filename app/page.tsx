@@ -9,26 +9,24 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-export const description =
-  "A simple login form with email and password. The submit button says 'Sign in'.";
 
 export default function Home() {
   return (
     <div className="w-full min-h-screen justify-center flex items-center">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
+      <Card className="w-full max-w-xs px-6">
+        <CardHeader className="border-b pb-4 px-0 mb-4">
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>
             Enter your email below to login to your account.
           </CardDescription>
         </CardHeader>
-        <CardContent className="grid gap-4">
+        <CardContent className="grid gap-4 px-0">
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
               type="email"
-              placeholder="m@example.com"
+              placeholder="name@example.com"
               required
             />
           </div>
@@ -37,8 +35,8 @@ export default function Home() {
             <Input id="password" type="password" required />
           </div>
         </CardContent>
-        <CardFooter>
-          <Button className="w-full">Sign in</Button>
+        <CardFooter className="px-0">
+          <Button className="w-full font-bold">Sign in</Button>
         </CardFooter>
       </Card>
     </div>
