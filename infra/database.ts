@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
+import knex from "knex";
 import type { Knex } from "knex";
-const { attachPaginate } = require('knex-paginate');
-import config from "@/knexfile";
+import { attachPaginate } from "knex-paginate";
+import config from "../knexfile";
 
-const db: Knex = require("knex")(config);
+const db: Knex = knex({ client: "pg", ...config });
 attachPaginate();
 
 export { db };

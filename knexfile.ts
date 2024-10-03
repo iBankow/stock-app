@@ -1,4 +1,4 @@
-import { Knex } from "knex";
+import{ Knex } from "knex";
 
 const config: Knex.Config = {
   client: "pg",
@@ -17,5 +17,4 @@ const config: Knex.Config = {
     directory: "./infra/seeds",
   },
 };
-
 export default config;
