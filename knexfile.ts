@@ -1,4 +1,9 @@
-import{ Knex } from "knex";
+import { Knex } from "knex";
+import dotenv from "dotenv";
+
+dotenv.config({
+  path: ".env.development",
+});
 
 const config: Knex.Config = {
   client: "pg",
