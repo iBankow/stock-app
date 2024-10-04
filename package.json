@@ -11,7 +11,7 @@
     "start": "next start",
     "lint": "next lint",
     "migration:create": "knex migrate:make",
-    "migration:up": "knex migrate:up",
+    "migration:up": "npm run wait-for-postgres && knex migrate:latest --verbose",
     "wait-for-postgres": "node infra/scripts/wait-for-postgres.js"
   },
   "dependencies": {
@@ -34,6 +34,7 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@types/knex": "^0.15.2",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
