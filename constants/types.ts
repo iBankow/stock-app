@@ -1,0 +1,17 @@
+export const UNITS = [
+  "UN",
+  "CX",
+  "KIT",
+  "BR",
+  "M1",
+  "M2",
+  "M3",
+  "GL",
+  "HRS",
+  "KG",
+  "LT",
+  "SERV",
+  "TON",
+  "ROLO",
+  "PC",
+];

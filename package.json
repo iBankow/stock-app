@@ -3,10 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "npm run services:up && npm run wait-for-postgres && next dev",
+    "services:up": "docker compose -f infra/compose.yaml up -d",
+    "services:stop": "docker compose -f infra/compose.yaml stop",
+    "services:down": "docker compose -f infra/compose.yaml down",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "migration:create": "knex migrate:make",
+    "migration:up": "npm run wait-for-postgres && knex migrate:latest --verbose",
+    "wait-for-postgres": "node infra/scripts/wait-for-postgres.js"
   },
   "dependencies": {
     "@radix-ui/react-dropdown-menu": "^2.1.2",
@@ -15,8 +21,7 @@
     "@radix-ui/react-slot": "^1.1.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
-    "docker": "^1.0.0",
-    "docker-compose": "^1.1.0",
+    "dotenv": "^16.4.5",
     "knex": "^3.1.0",
     "knex-paginate": "^3.1.4",
     "lucide-react": "^0.447.0",
@@ -29,6 +34,7 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@types/knex": "^0.15.2",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
