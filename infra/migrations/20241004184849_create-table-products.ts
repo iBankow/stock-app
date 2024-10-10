@@ -8,7 +8,7 @@ export async function up(knex: Knex): Promise<void> {
     table.integer("user_id").unsigned();
     table.integer("unit_id").unsigned();
     table.string("name", 128).unique().notNullable();
-    table.string("description", 255).notNullable();
+    table.string("description", 255);
     table.float("stock", 8.2).notNullable().defaultTo(0);
 
     table.boolean("is_deleted").defaultTo(true);
