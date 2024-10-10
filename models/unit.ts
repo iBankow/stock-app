@@ -11,24 +11,25 @@ export interface IUnit {
 }
 
 export default class UnitModel extends Base<IUnit> {
-  static tableName = "unit";
+  static tableName = "units";
 }
 
 const Unit = new UnitModel();
 
-export async function getAllUnits(
-  q: any,
-  paginate: { page: number; perPage: number }
-) {
+export async function getAllUnits(params: {
+  page: number;
+  perPage: number;
+  [key: string]: any;
+}) {
   const units = await Unit.findAll()
     .where((builder) => {
-      if (q.name) {
-        builder.whereILike("name", `%${q.name}%`);
+      if (params.name) {
+        builder.whereILike("name", `%${params.name}%`);
       }
     })
     .paginate({
-      currentPage: paginate.page,
-      perPage: paginate.perPage,
+      currentPage: params.page,
+      perPage: params.perPage,
     });
 
   return units;
