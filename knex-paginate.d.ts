@@ -36,7 +36,7 @@ interface ILengthAwarePagination extends IBasePagination {
   nextPage: number;
 }
 
-declare module 'knex' {
+declare module "knex" {
   namespace Knex {
     interface QueryBuilder<TRecord extends {} = any, TResult = any> {
       paginate<TParams extends IPaginateParams = IPaginateParams>(
