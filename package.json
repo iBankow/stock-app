@@ -3,16 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "npm run services:up && npm run wait-for-postgres && next dev",
+    "dev": "npm run services:up && npm run services:wait:db && next dev",
     "services:up": "docker compose -f infra/compose.yaml up -d",
     "services:stop": "docker compose -f infra/compose.yaml stop",
     "services:down": "docker compose -f infra/compose.yaml down",
+    "services:wait:db": "node infra/scripts/wait-for-postgres.js",
+    "migrations:create": "knex migrate:make",
+    "migrations:up": "npm run services:wait:db && knex migrate:latest --verbose",
+    "lint:prettier:check": "prettier --check .",
+    "lint:prettier:fix": "prettier --write .",
+    "lint:eslint:check": "next lint --dir .",
+    "prepare": "husky",
+    "commit": "cz",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "migration:create": "knex migrate:make",
-    "migration:up": "npm run wait-for-postgres && knex migrate:latest --verbose",
-    "wait-for-postgres": "node infra/scripts/wait-for-postgres.js"
+    "start": "next start"
   },
   "dependencies": {
     "@radix-ui/react-dropdown-menu": "^2.1.2",
@@ -34,14 +38,27 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.5.0",
+    "@commitlint/config-conventional": "^19.5.0",
     "@types/knex": "^0.15.2",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.14",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-jest": "^28.8.3",
+    "husky": "^9.1.6",
+    "jest": "^29.7.0",
     "postcss": "^8",
+    "prettier": "^3.3.3",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
