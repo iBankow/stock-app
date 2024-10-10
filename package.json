@@ -9,7 +9,7 @@
     "services:down": "docker compose -f infra/compose.yaml down",
     "services:wait:db": "node infra/scripts/wait-for-postgres.js",
     "migrations:create": "knex migrate:make",
-    "migrations:up": "npm run services:wait:db && knex migrate:latest --verbose",
+    "migrations:up": "npm run services:up && npm run services:wait:db && knex migrate:latest --verbose",
     "lint:prettier:check": "prettier --check .",
     "lint:prettier:fix": "prettier --write .",
     "lint:eslint:check": "next lint --dir .",
