@@ -11,7 +11,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string("description", 255);
     table.float("stock", 8.2).notNullable().defaultTo(0);
 
-    table.boolean("is_deleted").defaultTo(true);
+    table.boolean("is_deleted").defaultTo(false);
     table.timestamp("created_at").defaultTo(knex.fn.now());
     table.timestamp("updated_at").defaultTo(knex.fn.now());
 
