@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "npm run services:up && npm run services:wait:db && next dev",
+    "test": "npm run services:up && concurrently -n next,jest --hide next -k -s command-jest \"next dev\" \"jest --runInBand --detectOpenHandles\"",
+    "test:watch": "jest --watchAll --runInBand --verbose",
     "services:up": "docker compose -f infra/compose.yaml up -d",
     "services:stop": "docker compose -f infra/compose.yaml stop",
     "services:down": "docker compose -f infra/compose.yaml down",
@@ -23,6 +25,7 @@
     "@radix-ui/react-icons": "^1.3.0",
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-slot": "^1.1.0",
+    "async-retry": "^1.3.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "dotenv": "^16.4.5",
@@ -40,10 +43,13 @@
   "devDependencies": {
     "@commitlint/cli": "^19.5.0",
     "@commitlint/config-conventional": "^19.5.0",
+    "@types/async-retry": "^1.4.9",
+    "@types/jest": "^29.5.13",
     "@types/knex": "^0.15.2",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "concurrently": "^9.0.1",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.14",
@@ -54,6 +60,7 @@
     "postcss": "^8",
     "prettier": "^3.3.3",
     "tailwindcss": "^3.4.1",
+    "ts-jest": "^29.2.5",
     "typescript": "^5"
   },
   "config": {
