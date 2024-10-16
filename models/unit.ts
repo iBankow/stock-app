@@ -21,6 +21,7 @@ export async function getAllUnits(params: {
   perPage: number;
   [key: string]: any;
 }) {
+  console.log(params.name);
   const units = await Unit.findAll()
     .where((builder) => {
       if (params.name) {
@@ -38,7 +39,7 @@ export async function getAllUnits(params: {
 export async function createUnit(data: Omit<IUnit, "id">) {
   let unit = await Unit.query().whereILike("name", data.name);
 
-  if (unit) {
+  if (unit.length > 0) {
     throw new Error(`Unit already created`);
   }
 
