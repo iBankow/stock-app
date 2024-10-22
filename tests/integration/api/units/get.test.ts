@@ -26,7 +26,7 @@ describe("GET /api/v1/units", () => {
 
   test("Lists units with a search params", async () => {
     const response = await fetch(
-      "http://localhost:3000/api/v1/units?name=test"
+      "http://localhost:3000/api/v1/units?name=test",
     );
 
     const responseBody = await response.json();
@@ -39,7 +39,7 @@ describe("GET /api/v1/units", () => {
 
   test("Lists units with pagination", async () => {
     const response = await fetch(
-      "http://localhost:3000/api/v1/units?page=2&perPage=1"
+      "http://localhost:3000/api/v1/units?page=2&perPage=1",
     );
 
     const responseBody = await response.json();

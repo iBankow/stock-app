@@ -18,7 +18,7 @@ const User = new UserModel();
 
 export async function getAllUsers(
   q: Partial<IUser>,
-  paginate: { page: number; perPage: number }
+  paginate: { page: number; perPage: number },
 ) {
   const users = await User.findAll()
     .where((builder) => {

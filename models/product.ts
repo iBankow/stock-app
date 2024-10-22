@@ -37,7 +37,7 @@ export const ProductHistories = new ProductHistoriesModel();
 
 export async function getAllProducts(
   q: IProductQuery,
-  paginate: { page: number; perPage: number }
+  paginate: { page: number; perPage: number },
 ) {
   const products = await Product.findAll("products.*", "units.name")
     .where((builder) => {

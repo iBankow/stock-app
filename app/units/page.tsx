@@ -3,7 +3,7 @@ import { IUnit } from "@/models/unit";
 
 async function getUnits(): Promise<IPagination<IUnit>> {
   const res = await fetch(
-    `http://localhost:3000/api/v1/units?page=1&perPage10`
+    `http://localhost:3000/api/v1/units?page=1&perPage10`,
   );
 
   if (!res.ok) {

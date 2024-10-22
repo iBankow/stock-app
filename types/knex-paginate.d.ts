@@ -1,7 +1,4 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import type { Knex } from "knex";
-import { QueryBuilder } from "knex";
+import "knex";
 
 interface IPaginateParams {
   perPage: number;
@@ -38,6 +35,7 @@ interface ILengthAwarePagination extends IBasePagination {
 
 declare module "knex" {
   namespace Knex {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-object-type
     interface QueryBuilder<TRecord extends {} = any, TResult = any> {
       paginate<TParams extends IPaginateParams = IPaginateParams>(
         params: Readonly<TParams>

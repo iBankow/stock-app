@@ -6,7 +6,7 @@ export async function GET(_: Request) {
   const maxConnections = await db.raw("SHOW max_connections;");
   const activityConnection = await db.raw(
     "SELECT COUNT(*)::int FROM pg_stat_activity WHERE datname = ?;",
-    [process.env.POSTGRES_DB]
+    [process.env.POSTGRES_DB],
   );
 
   return Response.json({

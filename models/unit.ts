@@ -1,49 +1,66 @@
+import { IUnit } from "knex/types/tables.js";
 import Base from "./base";
-
-export interface IUnit {
-  id: number;
-  name: string;
-  description?: string;
-  ratio: string;
-  is_deleted: boolean;
-  created_at?: string;
-  updated_at?: string;
-}
 
 export default class UnitModel extends Base<IUnit> {
   static tableName = "units";
-}
 
-const Unit = new UnitModel();
+  public async getAllUnits(params: {
+    page: number;
+    perPage: number;
+    [key: string]: string | number | boolean | Array<number | number>;
+  }) {
+    const unitsQuery = await this.findAll()
+      .where((builder) => {
+        if (params.name) {
+          builder.whereILike("name", `%${params.name}%`);
+        }
+      })
+      .paginate({
+        currentPage: params.page,
+        perPage: params.perPage,
+        isLengthAware: true,
+      });
 
-export async function getAllUnits(params: {
-  page: number;
-  perPage: number;
-  [key: string]: any;
-}) {
-  console.log(params.name);
-  const units = await Unit.findAll()
-    .where((builder) => {
-      if (params.name) {
-        builder.whereILike("name", `%${params.name}%`);
-      }
-    })
-    .paginate({
-      currentPage: params.page,
-      perPage: params.perPage,
-    });
-
-  return units;
-}
-
-export async function createUnit(data: Omit<IUnit, "id">) {
-  let unit = await Unit.query().whereILike("name", data.name);
-
-  if (unit.length > 0) {
-    throw new Error(`Unit already created`);
+    return unitsQuery;
   }
 
-  unit = await Unit.create(data);
+  public async getUnitById(id: number) {
+    const unit = await this.findById(id).select("*");
 
-  return unit;
+    return unit;
+  }
+
+  public async createUnit(data: Partial<Omit<IUnit, "id">>) {
+    let unit = await this.query()
+      .select("id")
+      .where({ name: data.name, is_deleted: false })
+      .first();
+
+    if (unit) {
+      throw new Error(`Unit already created`);
+    }
+
+    unit = await this.create(data);
+
+    return unit;
+  }
+
+  public async updateUnit(id: number, data: Omit<IUnit, "id">) {
+    const unit = await this.update(id, data);
+
+    return unit;
+  }
+
+  public async deleteUnit(id: number) {
+    const unit = await this.query().select("id").where({ id }).first();
+
+    if (!unit) {
+      throw new Error(`Unit not exists created`);
+    }
+
+    await this.update(id, {
+      is_deleted: true,
+      updated_at: new Date().toISOString(),
+    });
+  }
 }

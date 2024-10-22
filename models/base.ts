@@ -20,58 +20,60 @@ type UpdateData<T> =
 
 export default class Base<T extends object> {
   protected static tableName: string;
+  private db: Knex;
   private table: string | undefined;
 
   constructor() {
+    this.db = db;
     this.table = (this.constructor as typeof Base).tableName || undefined;
   }
 
-  public query(): Knex.QueryBuilder<T> {
+  public query() {
     if (!this.table) {
       throw new Error(`table name is not defined`);
     }
-    return db<T>(this.table);
+    return this.db<T>(this.table);
   }
 
-  findAll(...columns: string[]): Knex.QueryBuilder<T> {
+  protected findAll(...columns: string[]): Knex.QueryBuilder<T> {
     const selectedColumns = columns.length > 0 ? columns : ["*"];
     const findAllQuery = this.query().select(...selectedColumns);
 
     return findAllQuery;
   }
 
-  async findById(id: number) {
-    return this.query().where("id", id).first();
+  protected findById(id: number) {
+    const findByIdQuery = this.query().where("id", id).first();
+
+    return findByIdQuery;
   }
 
-  async create(data: InsertData<T>): Promise<T> {
-    await this.beforeCreate();
+  protected async create(data: InsertData<T>) {
+    const created = await this.query().insert(data).returning("*");
 
-    const created = await db(this.table).insert(data).returning("*");
-
-    return created[0] as T;
+    return created[0];
   }
 
-  async update(id: number, data: UpdateData<T>) {
+  protected async update(id: number, data: UpdateData<T>) {
+    const findData = await this.findById(id).select("id");
+
+    if (!findData) {
+      throw new Error(`table row '${this.table}' not found!`);
+    }
+
     const updated = await this.query()
       .where("id", id)
       .update(data)
       .returning("*");
 
+    if (Array.isArray(data)) {
+      return updated;
+    }
+
     return updated[0];
   }
 
-  async delete(id: number): Promise<number> {
-    return this.query()
-      .where("id", id)
-      .update({ is_deleted: false } as any);
-  }
-
-  async drop(id: number): Promise<number> {
+  protected async drop(id: number): Promise<number> {
     return this.query().where("id", id).del();
-  }
-
-  async beforeCreate() {
-    return;
   }
 }
