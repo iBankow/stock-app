@@ -6,7 +6,6 @@ import { Table } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-import { DataTableFacetedFilter } from "../../../../components/data-table-faceted-filter";
 import { IProduct } from "knex/types/tables.js";
 import {
   CheckCircledIcon,
@@ -15,6 +14,8 @@ import {
   QuestionMarkCircledIcon,
   StopwatchIcon,
 } from "@radix-ui/react-icons";
+import { DataTableFacetedFilter } from "@/components/data-table-faceted-filter";
+import { CreateFormDialog } from "./create-form-dialog";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -80,6 +81,7 @@ export function DataTableToolbar({ table }: DataTableToolbarProps<IProduct>) {
           </Button>
         )}
       </div>
+      <CreateFormDialog />
     </div>
   );
 }
