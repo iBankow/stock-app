@@ -14,7 +14,7 @@ const config: Knex.Config = {
     user: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASSWORD,
   },
-  pool: { min: 1, max: 7 },
+  pool: { min: 0, max: 7 },
   migrations: {
     directory: "./infra/migrations/",
   },
