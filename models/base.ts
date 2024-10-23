@@ -35,7 +35,7 @@ export default class Base<T extends object> {
     return this.db<T>(this.table);
   }
 
-  protected findAll(...columns: string[]): Knex.QueryBuilder<T> {
+  protected findAll(...columns: string[]) {
     const selectedColumns = columns.length > 0 ? columns : ["*"];
     const findAllQuery = this.query().select(...selectedColumns);
 

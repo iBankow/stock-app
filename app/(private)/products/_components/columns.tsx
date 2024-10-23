@@ -16,8 +16,14 @@ import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import { EditFormDialog } from "./edit-form-dialog";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { DataTableColumnHeader } from "./data-column-header";
 
 export const columns: ColumnDef<IProduct>[] = [
+  {
+    accessorKey: "id",
+    header: "ID",
+    size: 64,
+  },
   {
     accessorKey: "name",
     header: "Name",
@@ -49,10 +55,14 @@ export const columns: ColumnDef<IProduct>[] = [
   },
   {
     accessorKey: "stock",
-    header: "Stock",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Estoque" />
+    ),
     cell(props) {
       return (
-        <Badge variant={props.row.original.stock > 5 ? "green" : "red"}>
+        <Badge
+          variant={Number(props.row.original.stock) > 50 ? "green" : "red"}
+        >
           {props.row.original.stock}
         </Badge>
       );

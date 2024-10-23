@@ -1,3 +1,4 @@
+import "knex";
 declare module "knex/types/tables.js" {
   interface User {
     id: number;

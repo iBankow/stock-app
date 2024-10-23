@@ -8,69 +8,92 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { usePagination } from "@/hooks/use-pagination";
 import { usePathname, useSearchParams } from "next/navigation";
+import { HTMLAttributes } from "react";
 
-interface IPaginationProps {
-  total: number;
-  limit?: number;
-  page: number;
+interface IPaginationComponent {
+  className?: HTMLAttributes<"nav">["className"];
+  meta?: any;
 }
 
-export function Pagination(props: IPaginationProps) {
+export function Pagination({ className, meta }: IPaginationComponent) {
   const pathName = usePathname();
   const searchParams = useSearchParams();
 
-  const { pages, isCurrentPage } = usePagination({
-    limit: props.limit || 6,
-    page: Number(searchParams.get("page")) || 1,
-    total: props.total,
-  });
+  // const { pages, isCurrentPage } = usePagination({
+  //   limit: props.limit || 6,
+  //   page: Number(searchParams.get("page")) || 1,
+  //   total: props.total,
+  // });
 
-  const generateUrl = (page: number) => {
-    const params = new URLSearchParams(searchParams);
+  const generatePages = () => {
+    const current = Math.min(meta?.current_page || 1, meta?.current_page || 1);
+    const total = Math.max(1, meta?.last_page || 1);
 
-    params.set("page", String(page));
+    if (total <= 7) {
+      return Array.from({ length: total }).map((_, i) => i + 1);
+    }
 
-    return pathName + "?" + params.toString();
+    if (current < 3) {
+      return [1, 2, 3, "...", total - 1, total];
+    }
+
+    if (current === 3) {
+      return [1, 2, 3, 4, "...", total - 1, total];
+    }
+
+    if (current > total - 2) {
+      return [1, 2, "...", total - 2, total - 1, total];
+    }
+
+    if (current === total - 2) {
+      return [1, 2, "...", total - 3, total - 2, total - 1, total];
+    }
+
+    return [1, "...", current - 1, current, current + 1, "...", total];
   };
 
+  function generateUrl(page: number) {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", page.toString());
+
+    const url = pathName + "?" + params.toString();
+
+    return url;
+  }
+
   return (
-    <SHPagination>
+    <SHPagination className={className}>
       <PaginationContent>
-        <PaginationItem>
-          <PaginationPrevious href="?page=1" />
+        <PaginationItem className="hidden sm:block">
+          <PaginationPrevious
+            disabled={!meta?.prev_page}
+            scroll={false}
+            href={generateUrl(meta?.current_page ? meta?.current_page - 1 : 0)}
+          />
         </PaginationItem>
-        {pages.map((page) => {
-          if (page === -10) {
-            return (
-              <PaginationItem key={page}>
-                <PaginationEllipsis />
-              </PaginationItem>
-            );
+        {generatePages().map((item, index) => {
+          if (typeof item === "string") {
+            return <PaginationEllipsis key={index} />;
           }
-
-          if (page === -20) {
-            return (
-              <PaginationItem key={page}>
-                <PaginationEllipsis />
-              </PaginationItem>
-            );
-          }
-
           return (
-            <PaginationItem key={page}>
+            <PaginationItem key={index}>
               <PaginationLink
-                isActive={isCurrentPage(page)}
-                href={generateUrl(page)}
+                // scroll={false}
+                href={generateUrl(item)}
+                isActive={item === meta?.current_page}
               >
-                {page}
+                {item}
               </PaginationLink>
             </PaginationItem>
           );
         })}
-        <PaginationItem>
-          <PaginationNext href="?page=2" />
+        <PaginationItem className="hidden sm:block">
+          <PaginationNext
+            disabled={!meta?.next_page}
+            scroll={false}
+            href={generateUrl(meta?.current_page ? meta?.current_page + 1 : 0)}
+          />
         </PaginationItem>
       </PaginationContent>
     </SHPagination>
