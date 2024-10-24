@@ -14,6 +14,7 @@ declare module "knex/types/tables.js" {
     is_deleted: boolean;
     created_at?: string;
     updated_at?: string;
+    unit_name?: string;
   }
   interface IProduct {
     id: number;
@@ -25,9 +26,6 @@ declare module "knex/types/tables.js" {
     is_deleted: boolean;
     created_at?: string;
     updated_at?: string;
-    unit?: {
-      name;
-    };
   }
   interface Tables {
     users: User;

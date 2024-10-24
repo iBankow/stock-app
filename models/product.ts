@@ -7,15 +7,6 @@ interface IProductQuery {
   stock?: "asc" | "desc";
 }
 
-// interface IUpdateStock {
-//   user_id: number;
-//   product_id: number;
-//   unit_id: number;
-//   quantity: number;
-//   ratio: string;
-//   type: "INBOUND" | "OUTBOUND";
-// }
-
 export default class ProductModel extends Base<IProduct> {
   static tableName = "products";
 
@@ -25,7 +16,8 @@ export default class ProductModel extends Base<IProduct> {
       perPage: number | string;
     } & IProductQuery
   ) {
-    const query = this.findAll("products.*", "units.name as unit_name")
+    const query = await this.findAll("products.*")
+      .select("units.name as unit_name")
       .where((builder) => {
         if (params.name) {
           builder.whereILike("products.name", `%${params.name}%`);
@@ -34,18 +26,24 @@ export default class ProductModel extends Base<IProduct> {
           builder.orWhereILike("description", `%${params.description}%`);
         }
       })
-      .orderBy("stock")
       .orderBy("products.created_at")
       .leftJoin("units", "products.unit_id", "units.id")
       .paginate({
         currentPage: Number(params.page || "1"),
         perPage: Number(params.perPage || "10"),
         isLengthAware: true,
+      })
+      .then((data) => {
+        return {
+          ...data,
+          data: data.data.map((product) => ({
+            ...product,
+            unit: { name: product.unit_name },
+          })),
+        };
       });
 
-    const products = await query;
-
-    return products;
+    return query;
   }
 }
 

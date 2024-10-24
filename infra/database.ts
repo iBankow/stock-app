@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
 import knex from "knex";
 import type { Knex as KnexType } from "knex";
 import config from "../knexfile";
-// import { attachPaginate } from "knex-paginate";
 
 knex.QueryBuilder.extend(
   "paginate",
@@ -42,8 +40,6 @@ knex.QueryBuilder.extend(
       .first();
 
     this.offset(offset).limit(limit);
-
-    console.log(this.toSQL().sql, offset, limit);
 
     return this.client.transaction(
       async (trx: any) => {
