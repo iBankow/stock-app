@@ -2,6 +2,7 @@ import {
   ArrowDownIcon,
   ArrowUpIcon,
   CaretSortIcon,
+  Cross2Icon,
 } from "@radix-ui/react-icons";
 import { Column } from "@tanstack/react-table";
 
@@ -11,7 +12,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  // DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -44,6 +44,16 @@ export function DataTableColumnHeader<TData, TValue>({
 
     column.toggleSorting(sort);
 
+    navigate.replace(url);
+  };
+
+  const clearSorting = () => {
+    const params = new URLSearchParams(searchParams);
+    params.delete(column.id);
+
+    column.clearSorting();
+
+    const url = pathName + "?" + params.toString();
     navigate.replace(url);
   };
 
@@ -83,11 +93,12 @@ export function DataTableColumnHeader<TData, TValue>({
             <ArrowDownIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
             Desc
           </DropdownMenuItem>
-          {/* <DropdownMenuSeparator /> */}
-          {/* <DropdownMenuItem onClick={() => column.toggleVisibility(false)}>
-            <EyeNoneIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-            Hide
-          </DropdownMenuItem> */}
+          {column.getIsSorted() && (
+            <DropdownMenuItem onClick={clearSorting}>
+              <Cross2Icon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
+              Limpar
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

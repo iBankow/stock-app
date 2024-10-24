@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import { EditFormDialog } from "./edit-form-dialog";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { DataTableColumnHeader } from "./data-column-header";
+import { DataTableColumnHeader } from "@/components/data-column-header";
 
 export const columns: ColumnDef<IProduct>[] = [
   {
@@ -45,7 +45,7 @@ export const columns: ColumnDef<IProduct>[] = [
   {
     accessorKey: "unit",
     header: "Unidade",
-    accessorFn(props) {
+    accessorFn(props: any) {
       return props.unit ? props.unit.name : "--";
     },
     meta: {
