@@ -3,24 +3,17 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { IUnit } from "knex/types/tables.js";
 import { format } from "date-fns";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { MoreHorizontal } from "lucide-react";
-import { EditFormDialog } from "./edit-form-dialog";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Actions } from "./actions";
 
 export const columns: ColumnDef<IUnit>[] = [
   {
     accessorKey: "id",
     header: "ID",
     size: 64,
+    meta: {
+      headerClassName: "hidden md:table-cell",
+      cellClassName: "truncate hidden md:table-cell",
+    },
   },
   {
     accessorKey: "name",
@@ -72,41 +65,7 @@ export const columns: ColumnDef<IUnit>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
-      const unit = row.original;
-
-      return (
-        <Dialog>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                className="cursor-pointer"
-                onClick={() =>
-                  navigator.clipboard.writeText(String(unit.id))
-                }
-              >
-                Copy unit ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DialogTrigger asChild className="cursor-pointer">
-                <DropdownMenuItem>Edit Profile</DropdownMenuItem>
-              </DialogTrigger>
-              <DropdownMenuItem className="cursor-pointer">
-                View unit details
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <EditFormDialog unit={unit} />
-        </Dialog>
-      );
-    },
+    cell: ({ row }) => <Actions unit={row.original} />,
     meta: {
       cellClassName: "text-start",
     },

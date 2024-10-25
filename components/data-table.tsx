@@ -75,22 +75,32 @@ export function DataTable<TData, TValue>({
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className={cell.column.columnDef.meta?.cellClassName}
-                      width={cell.column.columnDef.size}
-                      style={{
-                        maxWidth: cell.column.columnDef.maxSize,
-                        width: cell.column.columnDef.size,
-                      }}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
+                  {row.getVisibleCells().map((cell) => {
+                    console.log(cell.column.columnDef.maxSize);
+
+                    return (
+                      <TableCell
+                        key={cell.id}
+                        className={cell.column.columnDef.meta?.cellClassName}
+                        width={cell.column.columnDef.size}
+                        style={{
+                          maxWidth:
+                            cell.column.columnDef.maxSize &&
+                            cell.column.columnDef.maxSize < 1000
+                              ? cell.column.columnDef.maxSize
+                              : undefined,
+                          width: cell.column.columnDef.size
+                            ? cell.column.columnDef.size
+                            : undefined,
+                        }}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </TableCell>
+                    );
+                  })}
                 </TableRow>
               ))
             ) : (

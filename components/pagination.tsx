@@ -1,6 +1,6 @@
 "use client";
 import {
-  Pagination as SHPagination,
+  Pagination as UIPagination,
   PaginationContent,
   PaginationEllipsis,
   PaginationItem,
@@ -20,11 +20,8 @@ export function Pagination({ className, meta }: IPaginationComponent) {
   const pathName = usePathname();
   const searchParams = useSearchParams();
 
-  // const { pages, isCurrentPage } = usePagination({
-  //   limit: props.limit || 6,
-  //   page: Number(searchParams.get("page")) || 1,
-  //   total: props.total,
-  // });
+  const LE = "-3";
+  const RE = "+3";
 
   const generatePages = () => {
     const current = Math.min(meta?.current_page || 1, meta?.current_page || 1);
@@ -35,22 +32,22 @@ export function Pagination({ className, meta }: IPaginationComponent) {
     }
 
     if (current < 3) {
-      return [1, 2, 3, "...", total - 1, total];
+      return [1, 2, 3, RE, total - 1, total];
     }
 
     if (current === 3) {
-      return [1, 2, 3, 4, "...", total - 1, total];
+      return [1, 2, 3, RE, total - 1, total];
     }
 
     if (current > total - 2) {
-      return [1, 2, "...", total - 2, total - 1, total];
+      return [1, 2, LE, total - 2, total - 1, total];
     }
 
     if (current === total - 2) {
-      return [1, 2, "...", total - 3, total - 2, total - 1, total];
+      return [1, 2, LE, total - 3, total - 2, total - 1, total];
     }
 
-    return [1, "...", current - 1, current, current + 1, "...", total];
+    return [1, LE, current - 1, current, current + 1, RE, total];
   };
 
   function generateUrl(page: number) {
@@ -63,7 +60,7 @@ export function Pagination({ className, meta }: IPaginationComponent) {
   }
 
   return (
-    <SHPagination className={className}>
+    <UIPagination className={className}>
       <PaginationContent>
         <PaginationItem className="hidden sm:block">
           <PaginationPrevious
@@ -74,7 +71,17 @@ export function Pagination({ className, meta }: IPaginationComponent) {
         </PaginationItem>
         {generatePages().map((item, index) => {
           if (typeof item === "string") {
-            return <PaginationEllipsis key={index} />;
+            return (
+              <PaginationItem key={index}>
+                <PaginationLink
+                  // scroll={false}
+                  href={generateUrl(meta?.current_page + Number(item))}
+                  // isActive={item === meta?.current_page}
+                >
+                  <PaginationEllipsis />
+                </PaginationLink>
+              </PaginationItem>
+            );
           }
           return (
             <PaginationItem key={index}>
@@ -96,6 +103,6 @@ export function Pagination({ className, meta }: IPaginationComponent) {
           />
         </PaginationItem>
       </PaginationContent>
-    </SHPagination>
+    </UIPagination>
   );
 }
