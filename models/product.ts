@@ -7,6 +7,10 @@ interface IProductQuery {
   stock?: "asc" | "desc";
 }
 
+interface ProductWithUnitName extends IProduct {
+  unit_name: string;
+}
+
 export default class ProductModel extends Base<IProduct> {
   static tableName = "products";
 
@@ -16,7 +20,7 @@ export default class ProductModel extends Base<IProduct> {
       perPage: number | string;
     } & IProductQuery
   ) {
-    const query = await this.findAll("products.*")
+    const products = this.findAll<ProductWithUnitName>("products.*")
       .select("units.name as unit_name")
       .where((builder) => {
         if (params.name) {
@@ -28,22 +32,16 @@ export default class ProductModel extends Base<IProduct> {
       })
       .orderBy("products.created_at")
       .leftJoin("units", "products.unit_id", "units.id")
-      .paginate({
-        currentPage: Number(params.page || "1"),
-        perPage: Number(params.perPage || "10"),
-        isLengthAware: true,
-      })
-      .then((data) => {
-        return {
-          ...data,
-          data: data.data.map((product) => ({
-            ...product,
-            unit: { name: product.unit_name },
-          })),
-        };
-      });
+      .paginate(Number(params.page || 1), Number(params.perPage || 10))
+      .then((data) => ({
+        ...data,
+        data: data.data.map(({ unit_name, ...product }) => ({
+          ...product,
+          unit: { name: unit_name },
+        })),
+      }));
 
-    return query;
+    return products;
   }
 }
 

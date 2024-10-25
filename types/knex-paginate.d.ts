@@ -3,43 +3,30 @@ import "knex";
 interface IPaginateParams {
   perPage: number;
   currentPage: number;
-  isFromStart?: boolean;
-  isLengthAware?: boolean;
 }
 
-interface IWithPagination<Data, TParams = IPaginateParams> {
+interface IPagination<Data> {
   data: Data[];
-  pagination: IPagination<TParams>;
+  pagination: IBasePagination;
 }
-
-type IPagination<TParams> = TParams extends
-  | { currentPage: 1 }
-  | { isFromStart: true }
-  | { isLengthAware: true }
-  ? ILengthAwarePagination
-  : IBasePagination;
 
 interface IBasePagination {
-  currentPage: number;
-  perPage: number;
-  from: number;
-  to: number;
-}
-
-interface ILengthAwarePagination extends IBasePagination {
   total: number;
-  lastPage: number;
-  prevPage: number;
-  nextPage: number;
+  current_page: number;
+  per_page: number;
+  last_page: number;
+  prev_page: number;
+  next_page: number;
 }
 
 declare module "knex" {
   namespace Knex {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-object-type
     interface QueryBuilder<TRecord extends {} = any, TResult = any> {
-      paginate<TParams extends IPaginateParams = IPaginateParams>(
-        params: Readonly<TParams>
-      ): Knex.QueryBuilder<TRecord, IWithPagination<TRecord, TParams>>;
+      paginate(
+        perPage: number,
+        currentPage: number
+      ): Knex.QueryBuilder<TRecord, IPagination<TRecord>>;
     }
   }
 }

@@ -9,19 +9,15 @@ export default class UnitModel extends Base<IUnit> {
     perPage: number;
     [key: string]: string | number | boolean | Array<number | number>;
   }) {
-    const unitsQuery = await this.findAll()
+    const units = await this.findAll()
       .where((builder) => {
         if (params.name) {
           builder.whereILike("name", `%${params.name}%`);
         }
       })
-      .paginate({
-        currentPage: params.page,
-        perPage: params.perPage,
-        isLengthAware: true,
-      });
+      .paginate(params.page, params.perPage);
 
-    return unitsQuery;
+    return units;
   }
 
   public async getUnitById(id: number) {

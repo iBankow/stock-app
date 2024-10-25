@@ -28,16 +28,16 @@ export default class Base<T extends object> {
     this.table = (this.constructor as typeof Base).tableName || undefined;
   }
 
-  public query() {
+  public query<K extends object = T>() {
     if (!this.table) {
       throw new Error(`table name is not defined`);
     }
-    return this.db<T>(this.table);
+    return this.db<K>(this.table);
   }
 
-  protected findAll(...columns: string[]) {
+  protected findAll<K extends object = T>(...columns: string[]) {
     const selectedColumns = columns.length > 0 ? columns : ["*"];
-    const findAllQuery = this.query().select(...selectedColumns);
+    const findAllQuery = this.query<K>().select(...selectedColumns);
 
     return findAllQuery;
   }

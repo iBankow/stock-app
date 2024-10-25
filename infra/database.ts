@@ -4,12 +4,7 @@ import config from "../knexfile";
 
 knex.QueryBuilder.extend(
   "paginate",
-  function ({
-    perPage = 10,
-    currentPage = 1,
-    isFromStart = false,
-    isLengthAware = false,
-  }): any {
+  function (currentPage = 1, perPage = 10): any {
     if (isNaN(perPage)) {
       throw new Error("Paginate error: perPage must be a number.");
     }
@@ -18,20 +13,12 @@ knex.QueryBuilder.extend(
       throw new Error("Paginate error: currentPage must be a number.");
     }
 
-    if (typeof isFromStart !== "boolean") {
-      throw new Error("Paginate error: isFromStart must be a boolean.");
-    }
-
-    if (typeof isLengthAware !== "boolean") {
-      throw new Error("Paginate error: isLengthAware must be a boolean.");
-    }
-
     if (currentPage < 1) {
       currentPage = 1;
     }
 
-    const offset = isFromStart ? 0 : (currentPage - 1) * perPage;
-    const limit = isFromStart ? perPage * currentPage : perPage;
+    const offset = (currentPage - 1) * perPage;
+    const limit = perPage;
 
     const countQuery = this.client
       .queryBuilder()
@@ -51,7 +38,7 @@ knex.QueryBuilder.extend(
 
         const pagination = {
           total,
-          current_page: currentPage,
+          current_page: Number(currentPage),
           per_page: perPage,
           last_page,
           prev_page: currentPage > 1 ? currentPage - 1 : null,
