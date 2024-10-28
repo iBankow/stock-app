@@ -18,7 +18,7 @@ export default class ProductModel extends Base<IProduct> {
     params: {
       page: number | string;
       perPage: number | string;
-    } & IProductQuery
+    } & IProductQuery,
   ) {
     const products = this.findAll<ProductWithUnitName>("products.*")
       .select("units.name as unit_name")
@@ -30,7 +30,11 @@ export default class ProductModel extends Base<IProduct> {
           builder.orWhereILike("description", `%${params.description}%`);
         }
       })
-      .orderBy("products.created_at")
+      .orderBy(
+        params.stock
+          ? [{ column: "stock", order: params.stock }]
+          : [{ column: "products.id" }],
+      )
       .leftJoin("units", "products.unit_id", "units.id")
       .paginate(Number(params.page || 1), Number(params.perPage || 10))
       .then((data) => ({
@@ -42,6 +46,12 @@ export default class ProductModel extends Base<IProduct> {
       }));
 
     return products;
+  }
+
+  public async updateProduct(id: number, data: Omit<IProduct, "id">) {
+    const product = await this.update(id, data);
+
+    return product;
   }
 }
 

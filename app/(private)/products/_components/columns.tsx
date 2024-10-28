@@ -1,22 +1,10 @@
 "use client";
-
 import { ColumnDef } from "@tanstack/react-table";
 import { IProduct } from "knex/types/tables.js";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { MoreHorizontal } from "lucide-react";
-import { EditFormDialog } from "./edit-form-dialog";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { DataTableColumnHeader } from "@/components/data-column-header";
+import { Actions } from "./actions";
 
 export const columns: ColumnDef<IProduct>[] = [
   {
@@ -95,41 +83,7 @@ export const columns: ColumnDef<IProduct>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
-      const payment = row.original;
-
-      return (
-        <Dialog>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                className="cursor-pointer"
-                onClick={() =>
-                  navigator.clipboard.writeText(String(payment.id))
-                }
-              >
-                Copy payment ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DialogTrigger asChild className="cursor-pointer">
-                <DropdownMenuItem>Edit Profile</DropdownMenuItem>
-              </DialogTrigger>
-              <DropdownMenuItem className="cursor-pointer">
-                View payment details
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <EditFormDialog />
-        </Dialog>
-      );
-    },
+    cell: ({ row }) => <Actions product={row.original} />,
     meta: {
       cellClassName: "text-start",
     },

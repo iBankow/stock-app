@@ -12,7 +12,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 
 import { z } from "zod";
@@ -27,7 +26,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -35,6 +34,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { IUnit } from "knex/types/tables.js";
 
 const formSchema = z.object({
   name: z
@@ -46,8 +46,13 @@ const formSchema = z.object({
   unitId: z.string().optional(),
 });
 
-export const CreateFormDialog = () => {
+interface CreateFormDialogProps {
+  children: ReactNode;
+}
+
+export const CreateFormDialog = ({ children }: CreateFormDialogProps) => {
   const [open, setOpen] = useState(false);
+  const [units, setUnits] = useState([]);
   const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -63,6 +68,12 @@ export const CreateFormDialog = () => {
     setOpen(false);
   }
 
+  useEffect(() => {
+    fetch(`http://localhost:3000/api/v1/units?page=1&perPage=100`)
+      .then((response) => response.json())
+      .then((data) => setUnits(data.data));
+  }, []);
+
   return (
     <Dialog
       onOpenChange={(open) => {
@@ -72,8 +83,11 @@ export const CreateFormDialog = () => {
       open={open}
     >
       <DialogTrigger asChild>
-        <Button variant="outline" className="h-8">
-          <Plus className="h-4 w-4 mr-2" /> Criar Produto
+        <Button
+          variant="outline"
+          className="h-8 w-full sm:w-[150px] lg:w-[250px]"
+        >
+          {children}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -158,13 +172,15 @@ export const CreateFormDialog = () => {
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a verified email to display" />
+                          <SelectValue placeholder="Selecione uma unidade para o produto" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value={"1"}>m@example.com</SelectItem>
-                        <SelectItem value={"2"}>m@google.com</SelectItem>
-                        <SelectItem value={"3"}>m@support.com</SelectItem>
+                        {units.map((unit: IUnit) => (
+                          <SelectItem key={unit.id} value={String(unit.id)}>
+                            {unit.name}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />

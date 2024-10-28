@@ -16,6 +16,7 @@ import {
 } from "@radix-ui/react-icons";
 import { DataTableFacetedFilter } from "@/components/data-table-faceted-filter";
 import { CreateFormDialog } from "./create-form-dialog";
+import { Plus } from "lucide-react";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -81,7 +82,9 @@ export function DataTableToolbar({ table }: DataTableToolbarProps<IProduct>) {
           </Button>
         )}
       </div>
-      <CreateFormDialog />
+      <CreateFormDialog>
+        <Plus className="h-4 w-4 mr-2" /> Criar Unidade
+      </CreateFormDialog>
     </div>
   );
 }
