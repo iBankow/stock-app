@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 interface DataTableColumnHeaderProps<TData, TValue>
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -31,6 +32,13 @@ export function DataTableColumnHeader<TData, TValue>({
   const pathName = usePathname();
   const searchParams = useSearchParams();
   const navigate = useRouter();
+
+  useEffect(() => {
+    const sort = searchParams.get(column.id);
+    if (sort) {
+      column.toggleSorting(sort === "desc");
+    }
+  }, [searchParams, column]);
 
   if (!column.getCanSort()) {
     return <div className={cn(className)}>{title}</div>;

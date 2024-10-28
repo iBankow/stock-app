@@ -4,7 +4,6 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   Table,
   useReactTable,
 } from "@tanstack/react-table";
@@ -23,7 +22,7 @@ interface IDataToolbarProps<TData> {
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+  data: TData[] | any[];
   dataToolbar?: React.ElementType<IDataToolbarProps<TData>>;
 }
 
@@ -37,9 +36,6 @@ export function DataTable<TData, TValue>({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel({
-      initialSync: true,
-    }),
   });
 
   return (
@@ -72,35 +68,31 @@ export function DataTable<TData, TValue>({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                  key={row.id}
+                  key={row.original.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
-                  {row.getVisibleCells().map((cell) => {
-                    console.log(cell.column.columnDef.maxSize);
-
-                    return (
-                      <TableCell
-                        key={cell.id}
-                        className={cell.column.columnDef.meta?.cellClassName}
-                        width={cell.column.columnDef.size}
-                        style={{
-                          maxWidth:
-                            cell.column.columnDef.maxSize &&
-                            cell.column.columnDef.maxSize < 1000
-                              ? cell.column.columnDef.maxSize
-                              : undefined,
-                          width: cell.column.columnDef.size
-                            ? cell.column.columnDef.size
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className={cell.column.columnDef.meta?.cellClassName}
+                      width={cell.column.columnDef.size}
+                      style={{
+                        maxWidth:
+                          cell.column.columnDef.maxSize &&
+                          cell.column.columnDef.maxSize < 1000
+                            ? cell.column.columnDef.maxSize
                             : undefined,
-                        }}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
-                    );
-                  })}
+                        width: cell.column.columnDef.size
+                          ? cell.column.columnDef.size
+                          : undefined,
+                      }}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
                 </TableRow>
               ))
             ) : (

@@ -36,7 +36,7 @@ export function Pagination({ className, meta }: IPaginationComponent) {
     }
 
     if (current === 3) {
-      return [1, 2, 3, RE, total - 1, total];
+      return [1, 2, 3, 4, RE, total - 1, total];
     }
 
     if (current > total - 2) {
