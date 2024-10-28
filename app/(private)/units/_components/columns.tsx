@@ -1,5 +1,4 @@
 "use client";
-
 import { ColumnDef } from "@tanstack/react-table";
 import { IUnit } from "knex/types/tables.js";
 import { format } from "date-fns";
@@ -63,7 +62,7 @@ export const columns: ColumnDef<IUnit>[] = [
     },
   },
   {
-    id: "actions",
+    accessorKey: "Ações",
     enableHiding: false,
     cell: ({ row }) => <Actions unit={row.original} />,
     meta: {

@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -26,6 +27,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { IUnit } from "knex/types/tables.js";
 import { DialogProps } from "@radix-ui/react-dialog";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z
@@ -44,22 +47,45 @@ interface EditFormDialogProps extends DialogProps {
 }
 
 export function EditFormDialog({ unit, ...props }: EditFormDialogProps) {
+  const { toast } = useToast();
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: unit.name,
-      description: unit.description,
+      description: unit.description ? unit.description : "",
       ratio: Number(unit.ratio.split(":")[1]),
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const unit = { ...values, ratio: "1:" + values.ratio };
-    console.log(unit);
-    setLoading(false);
-    // setOpen(false);
+    const data = { ...values, ratio: "1:" + values.ratio };
+    setLoading(true);
+    await fetch(`http://localhost:3000/api/v1/units/${unit.id}`, {
+      body: JSON.stringify(data),
+      method: "PUT",
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        return Promise.reject(response);
+      })
+      .then(() => {
+        router.refresh();
+        if (props.onOpenChange) props.onOpenChange(false);
+      })
+      .catch(async (err: any) => {
+        const error = await err.json();
+        toast({
+          title: "Opa! Algo deu errado!",
+          description: error?.err ? error?.err : "",
+          variant: "destructive",
+        });
+      })
+      .finally(() => setLoading(false));
   }
 
   return (

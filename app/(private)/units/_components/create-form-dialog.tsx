@@ -27,6 +27,8 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { ReactNode, useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z
@@ -45,6 +47,9 @@ interface CreateFormDialogProps {
 }
 
 export const CreateFormDialog = ({ children }: CreateFormDialogProps) => {
+  const { toast } = useToast();
+  const router = useRouter();
+
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -58,9 +63,31 @@ export const CreateFormDialog = ({ children }: CreateFormDialogProps) => {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const unit = { ...values, ratio: "1:" + values.ratio };
-    console.log(unit);
-    setLoading(false);
-    // setOpen(false);
+    setLoading(true);
+
+    await fetch("http://localhost:3000/api/v1/units", {
+      body: JSON.stringify(unit),
+      method: "POST",
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        return Promise.reject(response);
+      })
+      .then(() => {
+        setOpen(false);
+        router.refresh();
+      })
+      .catch(async (err: any) => {
+        const error = await err.json();
+        toast({
+          title: "Opa! Algo deu errado!",
+          description: error.err,
+          variant: "destructive",
+        });
+      })
+      .finally(() => setLoading(false));
   }
 
   return (
@@ -135,14 +162,14 @@ export const CreateFormDialog = ({ children }: CreateFormDialogProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Razão</FormLabel>
-                    <div className="flex gap-3 items-center">
+                    <div className="flex items-center gap-3">
                       <Input
                         type="number"
                         value={1}
                         inputMode="numeric"
                         disabled
                       />
-                      <p className="font-bold text-lg">:</p>
+                      <p className="text-lg font-bold">:</p>
                       <FormControl>
                         <Input
                           {...field}

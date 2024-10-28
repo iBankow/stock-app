@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
   const searchParams: any = Object.fromEntries(
-    new URLSearchParams(request.nextUrl.searchParams)
+    new URLSearchParams(request.nextUrl.searchParams),
   );
   const Unit = new UnitModel();
 
@@ -20,8 +20,7 @@ export async function POST(request: Request) {
     const unit = await Unit.createUnit(data);
 
     return Response.json(unit, { status: 201 });
-  } catch (error) {
-    console.error(error);
-    return Response.json({ err: error }, { status: 409 });
+  } catch (error: any) {
+    return Response.json({ err: error.message }, { status: 409 });
   }
 }

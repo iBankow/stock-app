@@ -15,6 +15,7 @@ export default class UnitModel extends Base<IUnit> {
           builder.whereILike("name", `%${params.name}%`);
         }
       })
+      .orderBy("units.id")
       .paginate(params.page, params.perPage);
 
     return units;
@@ -33,7 +34,7 @@ export default class UnitModel extends Base<IUnit> {
       .first();
 
     if (unit) {
-      throw new Error(`Unit already created`);
+      throw new Error(`Essa unidade já foi criada.`);
     }
 
     unit = await this.create(data);

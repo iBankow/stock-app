@@ -1,15 +1,16 @@
-import { deleteUnit, updateUnit } from "@/models/unit";
+import UnitModel from "@/models/unit";
 import { NextRequest } from "next/server";
 
 type Context = {
   unitId: number;
 };
 
-export async function PUT(request: NextRequest, context: { params: Context }) {
+export async function PUT(request: Request, context: { params: Context }) {
+  const Unit = new UnitModel();
   const data = await request.json();
 
   try {
-    const unit = await updateUnit(context.params.unitId, data);
+    const unit = await Unit.updateUnit(context.params.unitId, data);
 
     return Response.json(unit, { status: 206 });
   } catch (error) {
@@ -19,8 +20,9 @@ export async function PUT(request: NextRequest, context: { params: Context }) {
 }
 
 export async function DELETE(_: NextRequest, context: { params: Context }) {
+  const Unit = new UnitModel();
   try {
-    const unit = await deleteUnit(context.params.unitId);
+    const unit = await Unit.deleteUnit(context.params.unitId);
 
     return Response.json(unit, { status: 206 });
   } catch (error) {
