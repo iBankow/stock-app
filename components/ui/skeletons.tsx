@@ -12,12 +12,12 @@ import { Input } from "./input";
 import { Button } from "./button";
 
 // Loading animation
-const shimmer =
-  "before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/60 before:to-transparent";
+// const shimmer =
+//  "before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/60 before:to-transparent";
 
 export function SkeletonTable({ columns }: any) {
   return (
-    <div className={`${shimmer} space-y-4`}>
+    <div className={`space-y-4`}>
       <div className="flex animate-pulse flex-col-reverse items-start justify-between gap-2 sm:flex-row sm:gap-0">
         <div className="flex w-full flex-1 items-center space-x-2">
           <Input className="h-8 w-full sm:w-[150px] lg:w-[250px]" />
