@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
   const searchParams: any = Object.fromEntries(
-    new URLSearchParams(request.nextUrl.searchParams)
+    new URLSearchParams(request.nextUrl.searchParams),
   );
   const Product = new ProductModel();
 
@@ -12,15 +12,16 @@ export async function GET(request: NextRequest) {
   return Response.json(products);
 }
 
-// export async function POST(request: Request) {
-//   const data = await request.json();
+export async function POST(request: Request) {
+  const data = await request.json();
+  const Product = new ProductModel();
 
-//   try {
-//     const unit = await createUnit(data);
+  try {
+    const product = await Product.createProduct(data);
 
-//     return Response.json(unit, { status: 201 });
-//   } catch (error) {
-//     console.error(error);
-//     return Response.json({ err: error }, { status: 409 });
-//   }
-// }
+    return Response.json(product, { status: 201 });
+  } catch (error) {
+    console.error(error);
+    return Response.json({ err: error }, { status: 409 });
+  }
+}

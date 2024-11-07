@@ -48,6 +48,21 @@ export default class ProductModel extends Base<IProduct> {
     return products;
   }
 
+  public async createProduct(data: Omit<IProduct, "id">) {
+    let product = await this.query()
+      .select("id")
+      .where({ name: data.name, is_deleted: false })
+      .first();
+
+    if (product) {
+      throw new Error(`Essa unidade já foi criada.`);
+    }
+
+    product = await this.create(data);
+
+    return product;
+  }
+
   public async updateProduct(id: number, data: Omit<IProduct, "id">) {
     const product = await this.update(id, data);
 
