@@ -65,7 +65,7 @@ export const CreateFormDialog = ({ children }: CreateFormDialogProps) => {
     const unit = { ...values, ratio: "1:" + values.ratio };
     setLoading(true);
 
-    await fetch("http://localhost:3000/api/v1/units", {
+    await fetch(`/api/v1/units`, {
       body: JSON.stringify(unit),
       method: "POST",
     })

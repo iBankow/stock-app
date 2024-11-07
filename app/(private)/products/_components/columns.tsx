@@ -81,6 +81,7 @@ export const columns: ColumnDef<IProduct>[] = [
     },
   },
   {
+    header: "Ações",
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => <Actions product={row.original} />,

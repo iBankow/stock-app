@@ -83,7 +83,7 @@ export function DataTableToolbar({ table }: DataTableToolbarProps<IProduct>) {
         )}
       </div>
       <CreateFormDialog>
-        <Plus className="h-4 w-4 mr-2" /> Criar Unidade
+        <Plus className="h-4 w-4 mr-2" /> Criar Produto
       </CreateFormDialog>
     </div>
   );

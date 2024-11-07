@@ -35,6 +35,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { IUnit } from "knex/types/tables.js";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z
@@ -43,7 +45,7 @@ const formSchema = z.object({
     .max(50, { message: "O nome deve ter no máximo 50 caracteres." }),
   description: z.string().max(255).optional(),
   stock: z.number().default(1),
-  unitId: z.string().optional(),
+  unit_id: z.string().optional(),
 });
 
 interface CreateFormDialogProps {
@@ -51,6 +53,9 @@ interface CreateFormDialogProps {
 }
 
 export const CreateFormDialog = ({ children }: CreateFormDialogProps) => {
+  const { toast } = useToast();
+  const router = useRouter();
+
   const [open, setOpen] = useState(false);
   const [units, setUnits] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -63,13 +68,34 @@ export const CreateFormDialog = ({ children }: CreateFormDialogProps) => {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    setLoading(false);
-    setOpen(false);
+    setLoading(true);
+    await fetch(`/api/v1/products`, {
+      body: JSON.stringify(values),
+      method: "POST",
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        return Promise.reject(response);
+      })
+      .then(() => {
+        setOpen(false);
+        router.refresh();
+  })
+      .catch(async (err: any) => {
+        const error = await err.json();
+        toast({
+          title: "Opa! Algo deu errado!",
+          description: error?.err ? error?.err : "",
+          variant: "destructive",
+        });
+      })
+      .finally(() => setLoading(false));
   }
 
   useEffect(() => {
-    fetch(`http://localhost:3000/api/v1/units?page=1&perPage=100`)
+    fetch(`/api/v1/units?page=1&perPage=100`)
       .then((response) => response.json())
       .then((data) => setUnits(data.data));
   }, []);
@@ -161,7 +187,7 @@ export const CreateFormDialog = ({ children }: CreateFormDialogProps) => {
               />
               <FormField
                 control={form.control}
-                name="unitId"
+                name="unit_id"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Unidade</FormLabel>

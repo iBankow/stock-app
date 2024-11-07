@@ -67,7 +67,7 @@ export function EditFormDialog({ product, ...props }: EditFormDialogProps) {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-    await fetch(`http://localhost:3000/api/v1/products/${product.id}`, {
+    await fetch(`/api/v1/products/${product.id}`, {
       body: JSON.stringify(values),
       method: "PUT",
     })
@@ -94,7 +94,7 @@ export function EditFormDialog({ product, ...props }: EditFormDialogProps) {
 
   useEffect(() => {
     if (props.open) {
-      fetch(`http://localhost:3000/api/v1/units?page=1&perPage=100`)
+      fetch(`/api/v1/units?page=1&perPage=100`)
         .then((response) => response.json())
         .then((data) => setUnits(data.data));
     }

@@ -63,7 +63,7 @@ export function EditFormDialog({ unit, ...props }: EditFormDialogProps) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const data = { ...values, ratio: "1:" + values.ratio };
     setLoading(true);
-    await fetch(`http://localhost:3000/api/v1/units/${unit.id}`, {
+    await fetch(`/api/v1/units/${unit.id}`, {
       body: JSON.stringify(data),
       method: "PUT",
     })
