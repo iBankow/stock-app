@@ -9,12 +9,13 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="w-full min-h-screen justify-center flex items-center">
+    <div className="flex min-h-screen w-full items-center justify-center">
       <Card className="w-full max-w-xs px-6">
-        <CardHeader className="border-b pb-4 px-0 mb-4">
+        <CardHeader className="mb-4 border-b px-0 pb-4">
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>
             Enter your email below to login to your account.
@@ -36,7 +37,9 @@ export default function Home() {
           </div>
         </CardContent>
         <CardFooter className="px-0">
-          <Button className="w-full font-bold">Sign in</Button>
+          <Button className="w-full font-bold">
+            <Link href={"/dashboard"}>Sign in</Link>
+          </Button>
         </CardFooter>
       </Card>
     </div>

@@ -6,6 +6,9 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Icons } from "@/components/icons";
 
+const activeLink = "text-foreground font-bold"
+
+
 export function MainNav() {
   const pathname = usePathname();
 
@@ -23,7 +26,7 @@ export function MainNav() {
           href="/products"
           className={cn(
             "transition-colors hover:text-foreground/80",
-            pathname === "/products" ? "text-foreground" : "text-foreground/60"
+            pathname === "/products" ? activeLink : "text-foreground/60",
           )}
         >
           Produtos
@@ -33,34 +36,22 @@ export function MainNav() {
           className={cn(
             "transition-colors hover:text-foreground/80",
             pathname?.startsWith("/units")
-              ? "text-foreground"
-              : "text-foreground/60"
+              ? activeLink
+              : "text-foreground/60",
           )}
         >
           Unidades
         </Link>
         <Link
-          href="/blocks"
+          href="/estoque"
           className={cn(
             "transition-colors hover:text-foreground/80",
-            pathname?.startsWith("/blocks")
-              ? "text-foreground"
-              : "text-foreground/60"
+            pathname?.startsWith("/estoque")
+              ? activeLink
+              : "text-foreground/60",
           )}
         >
-          Blocks
-        </Link>
-        <Link
-          href="/charts"
-          className={cn(
-            "transition-colors hover:text-foreground/80",
-            pathname?.startsWith("/docs/component/chart") ||
-              pathname?.startsWith("/charts")
-              ? "text-foreground"
-              : "text-foreground/60"
-          )}
-        >
-          Charts
+          Estoque
         </Link>
       </nav>
     </div>
