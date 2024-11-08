@@ -4,7 +4,8 @@ import Base from "./base";
 interface IProductQuery {
   name?: string;
   description?: string;
-  stock?: "asc" | "desc";
+  order_stock?: "asc" | "desc";
+  order_name?: "asc" | "desc";
 }
 
 interface ProductWithUnitName extends IProduct {
@@ -13,6 +14,26 @@ interface ProductWithUnitName extends IProduct {
 
 export default class ProductModel extends Base<IProduct> {
   static tableName = "products";
+
+  private orderQuery(
+    params: {
+      page: number | string;
+      perPage: number | string;
+    } & IProductQuery,
+  ) {
+    const order = [{ column: "products.id", order: "asc" }];
+
+    for (const entries of Object.entries(params)) {
+      if (entries[0].startsWith("order_")) {
+        order.unshift({
+          column: "products." + entries[0].slice(6),
+          order: entries[1],
+        });
+      }
+    }
+
+    return order;
+  }
 
   public async getAllProducts(
     params: {
@@ -30,11 +51,7 @@ export default class ProductModel extends Base<IProduct> {
           builder.orWhereILike("description", `%${params.description}%`);
         }
       })
-      .orderBy(
-        params.stock
-          ? [{ column: "stock", order: params.stock }]
-          : [{ column: "products.id" }],
-      )
+      .orderBy(this.orderQuery(params))
       .leftJoin("units", "products.unit_id", "units.id")
       .paginate(Number(params.page || 1), Number(params.perPage || 10))
       .then((data) => ({
