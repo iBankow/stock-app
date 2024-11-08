@@ -26,9 +26,31 @@ declare module "knex/types/tables.js" {
     created_at?: string;
     updated_at?: string;
   }
+
+  interface IProductHistories {
+    id: number;
+    user_id: number;
+    product_id: number;
+    unit_id: number;
+    quantity: number;
+    ratio: string;
+    type: "INBOUND" | "OUTBOUND";
+    created_at?: string;
+  }
+
+  interface IProductStocks {
+    id: number;
+    user_id: number;
+    product_id: number;
+    quantity: number;
+    created_at?: string;
+  }
+
   interface Tables {
     users: User;
     units: IUnit;
     products: IProduct;
+    product_histories: IProductHistories;
+    product_stocks: IProductStocks;
   }
 }

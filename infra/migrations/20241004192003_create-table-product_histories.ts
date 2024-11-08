@@ -15,7 +15,6 @@ export async function up(knex: Knex): Promise<void> {
         enumName: "history_type",
         useNative: true,
       })
-      .unique()
       .notNullable();
 
     table.timestamp("created_at").defaultTo(knex.fn.now());

@@ -20,7 +20,7 @@ type UpdateData<T> =
 
 export default class Base<T extends object> {
   protected static tableName: string;
-  private db: Knex;
+  db: Knex;
   private table: string | undefined;
 
   constructor() {

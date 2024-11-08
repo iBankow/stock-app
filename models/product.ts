@@ -65,7 +65,7 @@ export default class ProductModel extends Base<IProduct> {
     return products;
   }
 
-  public async createProduct(data: Omit<IProduct, "id">) {
+  public async createProduct(data: Omit<Partial<IProduct>, "id">) {
     let product = await this.query()
       .select("id")
       .where({ name: data.name, is_deleted: false })
