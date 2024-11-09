@@ -82,7 +82,7 @@ export const CreateFormDialog = ({ children }: CreateFormDialogProps) => {
       .then(() => {
         setOpen(false);
         router.refresh();
-  })
+      })
       .catch(async (err: any) => {
         const error = await err.json();
         toast({
@@ -95,10 +95,12 @@ export const CreateFormDialog = ({ children }: CreateFormDialogProps) => {
   }
 
   useEffect(() => {
-    fetch(`/api/v1/units?page=1&perPage=100`)
-      .then((response) => response.json())
-      .then((data) => setUnits(data.data));
-  }, []);
+    if (open) {
+      fetch(`/api/v1/units?page=1&perPage=100`)
+        .then((response) => response.json())
+        .then((data) => setUnits(data.data));
+    }
+  }, [open]);
 
   return (
     <Dialog

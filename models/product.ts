@@ -77,6 +77,11 @@ export default class ProductModel extends Base<IProduct> {
 
     product = await this.create(data);
 
+    await this.db("product_stocks").insert({
+      product_id: product.id,
+      quantity: data.stock,
+    });
+
     return product;
   }
 
@@ -86,35 +91,3 @@ export default class ProductModel extends Base<IProduct> {
     return product;
   }
 }
-
-// const Product = new ProductModel();
-// export const ProductHistories = new ProductHistoriesModel();
-
-// export async function createProduct(data: Omit<IProduct, "id">) {
-//   let product = await Product.query().whereILike("name", data.name);
-
-//   if (product) {
-//     throw new Error(`Product already created`);
-//   }
-
-//   product = await Product.create(data);
-
-//   return product;
-// }
-
-// export async function updateStock(data: IUpdateStock) {
-//   const product = await Product.findById(data.product_id);
-
-//   const ratio = data.ratio.split(":");
-//   const stock =
-//     data.type === "INBOUND"
-//       ? product.stock + Number(ratio[1]) * data.quantity
-//       : product.stock - Number(ratio[1]) * data.quantity;
-
-//   await Product.update(data.product_id, { stock });
-//   await ProductHistories.create({
-//     ...data,
-//   });
-
-//   return product;
-// }
