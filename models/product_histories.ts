@@ -1,6 +1,11 @@
 import { IProductHistories } from "knex/types/tables.js";
 import Base from "./base";
 
+interface IProductHistoriesWithJoins extends IProductHistories {
+  unit_name: string;
+  product_name: string;
+}
+
 export default class ProductHistoriesModel extends Base<IProductHistories> {
   static tableName = "product_histories";
 
@@ -9,7 +14,22 @@ export default class ProductHistoriesModel extends Base<IProductHistories> {
     perPage: number;
     [key: string]: string | number | boolean | Array<number | number>;
   }) {
-    const units = await this.findAll().paginate(params.page, params.perPage);
+    const units = await this.findAll<IProductHistoriesWithJoins>(
+      "product_histories.*",
+    )
+      .select("products.name as product_name")
+      .select("units.name as unit_name")
+      .leftJoin("products", "product_histories.product_id", "products.id")
+      .leftJoin("units", "product_histories.unit_id", "units.id")
+      .paginate(params.page, params.perPage)
+      .then((data) => ({
+        ...data,
+        data: data.data.map(({ unit_name, product_name, ...rest }) => ({
+          ...rest,
+          unit: { name: unit_name },
+          product: { name: product_name },
+        })),
+      }));
 
     return units;
   }
@@ -54,7 +74,10 @@ export default class ProductHistoriesModel extends Base<IProductHistories> {
         await this.db("product_stocks")
           .insert({
             product_id: history.product_id,
-            quantity: product.stock,
+            quantity:
+              history.type === "OUTBOUND"
+                ? product.stock - total
+                : product.stock + total,
           })
           .transacting(trx);
       }
