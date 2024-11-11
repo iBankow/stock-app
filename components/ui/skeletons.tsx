@@ -54,7 +54,7 @@ export function SkeletonTable({ columns }: any) {
                       width: cell.size ? cell.size : undefined,
                     }}
                   >
-                    <div className="my-2 h-4 w-full animate-pulse bg-muted-foreground"></div>
+                    <div className="my-0.5 h-4 w-full animate-pulse bg-muted-foreground"></div>
                   </TableCell>
                 ))}
               </TableRow>

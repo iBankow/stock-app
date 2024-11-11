@@ -67,7 +67,7 @@ export const columns: ColumnDef<IUnit>[] = [
     enableHiding: false,
     cell: ({ row }) => <Actions unit={row.original} />,
     meta: {
-      cellClassName: "text-start",
+      cellClassName: "text-start py-0",
     },
   },
 ];
