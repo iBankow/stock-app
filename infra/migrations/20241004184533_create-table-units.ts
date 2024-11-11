@@ -9,7 +9,7 @@ export async function up(knex: Knex): Promise<void> {
       table.increments("id", { primaryKey: true });
       table.string("name", 128).unique().notNullable();
       table.string("description", 255);
-      table.string("ratio").notNullable().defaultTo("1:1");
+      table.integer("ratio").notNullable().defaultTo(1);
 
       table.boolean("is_deleted").defaultTo(true);
       table.timestamp("created_at").defaultTo(knex.fn.now());

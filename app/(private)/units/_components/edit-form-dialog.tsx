@@ -56,7 +56,7 @@ export function EditFormDialog({ unit, ...props }: EditFormDialogProps) {
     defaultValues: {
       name: unit.name,
       description: unit.description ? unit.description : "",
-      ratio: Number(unit.ratio.split(":")[1]),
+      ratio: unit.ratio,
     },
   });
 

@@ -6,7 +6,7 @@ function createRandomProduct(): Partial<IUnit> {
   return {
     name: faker.science.unit().name,
     description: faker.commerce.productDescription(),
-    ratio: `1:${faker.number.int({ min: 1, max: 24 })}`,
+    ratio: faker.number.int({ min: 1, max: 24 }),
   };
 }
 

@@ -62,7 +62,7 @@ export const CreateFormDialog = ({ children }: CreateFormDialogProps) => {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const unit = { ...values, ratio: "1:" + values.ratio };
+    const unit = values;
     setLoading(true);
 
     await fetch(`/api/v1/units`, {
