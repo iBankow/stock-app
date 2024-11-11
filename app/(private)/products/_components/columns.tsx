@@ -86,7 +86,7 @@ export const columns: ColumnDef<IProduct>[] = [
     enableHiding: false,
     cell: ({ row }) => <Actions product={row.original} />,
     meta: {
-      cellClassName: "text-start",
+      cellClassName: "text-start py-0",
     },
   },
 ];

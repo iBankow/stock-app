@@ -41,7 +41,7 @@ export function DataTable<TData, TValue>({
   return (
     <div className="space-y-4">
       {Toolbar && <Toolbar table={table} />}
-      <div className="rounded-md border">
+      <div className="rounded-md border min-h-[600px]">
         <UITable>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -67,10 +67,7 @@ export function DataTable<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.original.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
+                <TableRow key={row.original.id}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
@@ -85,6 +82,7 @@ export function DataTable<TData, TValue>({
                         width: cell.column.columnDef.size
                           ? cell.column.columnDef.size
                           : undefined,
+                        height: "55px",
                       }}
                     >
                       {flexRender(

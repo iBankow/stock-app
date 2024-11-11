@@ -9,7 +9,7 @@ export default async function PageUnits(params: any) {
   const currentPage = Number(searchParams?.page) || 1;
 
   return (
-    <div className="container relative min-h-screen py-10">
+    <div className="container relative py-10">
       <Suspense key={query + currentPage} fallback={<SkeletonTable columns={columns} />}>
         <UnitsTable searchParams={params.searchParams} />
       </Suspense>
