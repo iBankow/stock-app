@@ -9,7 +9,7 @@ export async function up(knex: Knex): Promise<void> {
     table.integer("product_id").unsigned();
     table.integer("unit_id").unsigned();
     table.float("quantity", 8.2).notNullable().defaultTo(1);
-    table.string("ratio").notNullable().defaultTo("1:1");
+    table.integer("ratio").notNullable().defaultTo(1);
     table
       .enu("type", ["OUTBOUND", "INBOUND"], {
         enumName: "history_type",

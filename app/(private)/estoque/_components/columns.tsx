@@ -43,6 +43,7 @@ export const columns: ColumnDef<IProductHistories>[] = [
   {
     accessorKey: "ratio",
     header: "Razão",
+    accessorFn: (row) => `1:${row.ratio}`,
   },
   {
     accessorKey: "quantity",
@@ -51,17 +52,17 @@ export const columns: ColumnDef<IProductHistories>[] = [
   {
     accessorKey: "unity_quantity",
     header: "Qtd. Unitaria",
-    accessorFn: (row) => {
-      const ratio = row.ratio.split(":")[1];
-      return +ratio * row.quantity;
-    },
+    accessorFn: (row) => row.ratio * row.quantity,
   },
   {
     accessorKey: "created_at",
     header: "Criado em",
     accessorFn: (row) => {
       const date = row.created_at;
-      return format(date ? date : "2024-10-22T13:51:24.159Z", "dd/MM/yyyy 'às' HH:mm");
+      return format(
+        date ? date : "2024-10-22T13:51:24.159Z",
+        "dd/MM/yyyy 'às' HH:mm",
+      );
     },
     meta: {
       headerClassName: "truncate hidden sm:table-cell",

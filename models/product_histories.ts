@@ -60,7 +60,7 @@ export default class ProductHistoriesModel extends Base<IProductHistories> {
         }
 
         await this.db("product_histories")
-          .insert({ ...history, ratio: `1:${history.ratio}` })
+          .insert({ ...history })
           .transacting(trx);
         await this.db("products")
           .where("id", history.product_id)

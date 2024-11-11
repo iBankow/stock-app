@@ -100,11 +100,7 @@ export const RowForm = ({
               onValueChange={(e) => {
                 field.onChange(e);
                 const unit = units.find((unit) => unit.id === Number(e));
-                if (unit)
-                  form.setValue(
-                    `products.${index}.ratio`,
-                    Number(unit.ratio.split(":")[1]),
-                  );
+                if (unit) form.setValue(`products.${index}.ratio`, unit.ratio);
               }}
               value={field.value}
             >

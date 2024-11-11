@@ -36,6 +36,7 @@ export const columns: ColumnDef<IUnit>[] = [
   {
     accessorKey: "ratio",
     header: "Razão",
+    accessorFn: (row) => `1:${row.ratio}`,
   },
   {
     accessorKey: "created_at",

@@ -10,7 +10,7 @@ declare module "knex/types/tables.js" {
     id: number;
     name: string;
     description?: string;
-    ratio: string;
+    ratio: number;
     is_deleted: boolean;
     created_at?: string;
     updated_at?: string;
@@ -33,7 +33,7 @@ declare module "knex/types/tables.js" {
     product_id: number;
     unit_id: number;
     quantity: number;
-    ratio: string;
+    ratio: number;
     type: "INBOUND" | "OUTBOUND";
     created_at?: string;
   }
