@@ -12,6 +12,12 @@ function createRandomProduct() {
 export async function GET() {
   const Product = new ProductModel();
 
+  const [productCount] = await Product.query().count("id");
+
+  if (Number(productCount.count) > 1) {
+    return Response.json({ product_count: productCount }, { status: 200 });
+  }
+
   let count = 0;
   while (count < 150) {
     const product = createRandomProduct();
@@ -23,5 +29,5 @@ export async function GET() {
     }
   }
 
-  return Response.json({ ok: "ok" }, { status: 201 });
+  return Response.json({ ok: "ok", productCount }, { status: 201 });
 }
