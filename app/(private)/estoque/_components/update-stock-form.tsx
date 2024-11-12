@@ -63,7 +63,7 @@ export const UpdateStockForm = () => {
         toast({
           title: "Estoque atualizado!",
         });
-        router.replace("/estoque");
+        router.push("/estoque");
       })
       .catch(async (err: any) => {
         const error = await err.json();

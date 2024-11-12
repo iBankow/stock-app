@@ -65,6 +65,18 @@ export default class ProductModel extends Base<IProduct> {
     return products;
   }
 
+  public async getProductById(id: number) {
+    const product = await this.findById(id).select("*");
+
+    const stock = await this.db("product_stocks")
+      .select("*")
+      .where("product_id", id);
+
+    const data = { ...product, product_stock: stock };
+
+    return data;
+  }
+
   public async createProduct(data: Omit<Partial<IProduct>, "id">) {
     let product = await this.query()
       .select("id")
@@ -72,7 +84,7 @@ export default class ProductModel extends Base<IProduct> {
       .first();
 
     if (product) {
-      throw new Error(`Essa unidade já foi criada.`);
+      throw new Error(`Esse produto já foi criada.`);
     }
 
     product = await this.create(data);
