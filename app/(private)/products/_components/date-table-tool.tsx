@@ -7,74 +7,72 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import { IProduct } from "knex/types/tables.js";
-import {
-  CheckCircledIcon,
-  CircleIcon,
-  CrossCircledIcon,
-  QuestionMarkCircledIcon,
-  StopwatchIcon,
-} from "@radix-ui/react-icons";
-import { DataTableFacetedFilter } from "@/components/data-table-faceted-filter";
+
 import { CreateFormDialog } from "./create-form-dialog";
 import { Plus } from "lucide-react";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import { useDebouncedCallback } from "use-debounce";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
 }
 
-const statuses = [
-  {
-    value: "backlog",
-    label: "Backlog",
-    icon: QuestionMarkCircledIcon,
-  },
-  {
-    value: "todo",
-    label: "Todo",
-    icon: CircleIcon,
-  },
-  {
-    value: "in progress",
-    label: "In Progress",
-    icon: StopwatchIcon,
-  },
-  {
-    value: "done",
-    label: "Done",
-    icon: CheckCircledIcon,
-  },
-  {
-    value: "canceled",
-    label: "Canceled",
-    icon: CrossCircledIcon,
-  },
-];
+export function DataTableToolbar({}: DataTableToolbarProps<IProduct>) {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
 
-export function DataTableToolbar({ table }: DataTableToolbarProps<IProduct>) {
-  const isFiltered = table.getState().columnFilters.length > 0;
+  const handleSearch = useDebouncedCallback((term) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", "1");
+    if (term) {
+      params.set("name", term);
+    } else {
+      params.delete("name");
+    }
+    replace(`${pathname}?${params.toString()}`);
+  }, 300);
+
+  const handleClearSearch = () => {
+    const params = new URLSearchParams(searchParams);
+    params.delete("name");
+    replace(`${pathname}?${params.toString()}`);
+  };
+
+  // useEffect(() => {
+  //   fetch(`/api/v1/units?page=1&perPage=100`)
+  //     .then((response) => response.json())
+  //     .then((data) =>
+  //       setUnits(
+  //         data.data.map((unit: any) => ({
+  //           value: unit.id,
+  //           label: unit.name,
+  //           icon: CircleIcon,
+  //         })),
+  //       ),
+  //     );
+  // }, []);
 
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
         <Input
           placeholder="Filter products..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => {
-            table.getColumn("name")?.setFilterValue(event.target.value);
-          }}
+          onChange={(event) => handleSearch(event.target.value)}
           className="h-8 w-[150px] lg:w-[250px]"
+          defaultValue={searchParams.get("name")?.toString()}
         />
-        {table.getColumn("unit") && (
+        {/* {table.getColumn("unit") && (
           <DataTableFacetedFilter
             column={table.getColumn("unit")}
             title="Status"
-            options={statuses}
+            options={units}
           />
-        )}
-        {isFiltered && (
+        )} */}
+        {searchParams.get("name") && (
           <Button
             variant="ghost"
-            onClick={() => table.resetColumnFilters()}
+            onClick={handleClearSearch}
             className="h-8 px-2 lg:px-3"
           >
             Reset
@@ -83,7 +81,7 @@ export function DataTableToolbar({ table }: DataTableToolbarProps<IProduct>) {
         )}
       </div>
       <CreateFormDialog>
-        <Plus className="h-4 w-4 mr-2" /> Criar Produto
+        <Plus className="mr-2 h-4 w-4" /> Criar Produto
       </CreateFormDialog>
     </div>
   );

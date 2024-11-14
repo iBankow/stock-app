@@ -32,9 +32,10 @@ export function DataTableColumnHeader<TData, TValue>({
   const pathName = usePathname();
   const searchParams = useSearchParams();
   const navigate = useRouter();
+  const SEARHPARAM = searchParams.get("order_" + column.id);
 
   useEffect(() => {
-    const sort = searchParams.get(column.id);
+    const sort = searchParams.get("order_" + column.id);
     if (sort) {
       column.toggleSorting(sort === "desc");
     }
@@ -46,7 +47,7 @@ export function DataTableColumnHeader<TData, TValue>({
 
   const toggleSorting = (sort: boolean) => {
     const params = new URLSearchParams(searchParams);
-    params.set(column.id, sort ? "desc" : "asc");
+    params.set("order_" + column.id, sort ? "desc" : "asc");
 
     const url = pathName + "?" + params.toString();
 
@@ -57,7 +58,7 @@ export function DataTableColumnHeader<TData, TValue>({
 
   const clearSorting = () => {
     const params = new URLSearchParams(searchParams);
-    params.delete(column.id);
+    params.delete("order_" + column.id);
 
     column.clearSorting();
 
@@ -75,9 +76,9 @@ export function DataTableColumnHeader<TData, TValue>({
             className="-ml-3 h-8 data-[state=open]:bg-accent"
           >
             <span>{title}</span>
-            {column.getIsSorted() === "desc" ? (
+            {SEARHPARAM === "desc" ? (
               <ArrowDownIcon className="ml-2 h-4 w-4" />
-            ) : column.getIsSorted() === "asc" ? (
+            ) : SEARHPARAM === "asc" ? (
               <ArrowUpIcon className="ml-2 h-4 w-4" />
             ) : (
               <CaretSortIcon className="ml-2 h-4 w-4" />
@@ -101,7 +102,7 @@ export function DataTableColumnHeader<TData, TValue>({
             <ArrowDownIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
             Desc
           </DropdownMenuItem>
-          {column.getIsSorted() && (
+          {SEARHPARAM && (
             <DropdownMenuItem onClick={clearSorting}>
               <Cross2Icon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
               Limpar

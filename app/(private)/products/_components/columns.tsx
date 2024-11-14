@@ -14,7 +14,9 @@ export const columns: ColumnDef<IProduct>[] = [
   },
   {
     accessorKey: "name",
-    header: "Name",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Nome" />
+    ),
     size: 200,
     meta: {
       cellClassName: "truncate",
