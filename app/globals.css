@@ -71,3 +71,9 @@
     font-family: "Roboto", sans-serif;
   }
 }
+
+
+.table-table-last-row tr:last-child > td {
+  border-bottom-width: 1px;
+  border-color: hsl(var(--border));
+}

@@ -21,6 +21,7 @@ export default class ProductHistoriesModel extends Base<IProductHistories> {
       .select("units.name as unit_name")
       .leftJoin("products", "product_histories.product_id", "products.id")
       .leftJoin("units", "product_histories.unit_id", "units.id")
+      .orderBy("id", "desc")
       .paginate(params.page, params.perPage)
       .then((data) => ({
         ...data,
