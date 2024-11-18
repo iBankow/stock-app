@@ -1,10 +1,14 @@
 import "knex";
 declare module "knex/types/tables.js" {
-  interface User {
+  interface IUser {
     id: number;
     name: string;
-    created_at: string;
-    updated_at: string;
+    username: string;
+    password: string;
+    is_active: boolean;
+    is_deleted: boolean;
+    created_at?: string;
+    updated_at?: string;
   }
   interface IUnit {
     id: number;
@@ -47,7 +51,7 @@ declare module "knex/types/tables.js" {
   }
 
   interface Tables {
-    users: User;
+    users: IUser;
     units: IUnit;
     products: IProduct;
     product_histories: IProductHistories;

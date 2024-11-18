@@ -1,11 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
+import NextAuth from "next-auth";
+import { authConfig } from "./auth.config";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default async function middleware(req: NextRequest) {
-  return NextResponse.next();
-}
+
+export default NextAuth(authConfig).auth;
 
 // Routes Middleware should not run on
 export const config = {
-  matcher: ["/"],
+  matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
 };

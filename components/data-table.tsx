@@ -41,7 +41,7 @@ export function DataTable<TData, TValue>({
   return (
     <div className="space-y-4">
       {Toolbar && <Toolbar table={table} />}
-      <div className="min-h-[600px] rounded-md border">
+      <div className="rounded-md border min-h-[600px]">
         <UITable>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
