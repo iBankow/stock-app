@@ -1,4 +1,5 @@
 import { ProductStockCharts } from "./_components/charts";
+import type { Metadata } from "next";
 
 interface ProductPageProps {
   params: {
@@ -14,6 +15,16 @@ async function getData(productId: string | number) {
   return response;
 }
 
+export async function generateMetadata({
+  params,
+}: ProductPageProps): Promise<Metadata> {
+  const id = (await params).productId;
+
+  const product = await getData(id);
+
+  return { title: product.name };
+}
+
 export default async function PageProduct({ params }: ProductPageProps) {
   const { productId } = params;
 
@@ -21,7 +32,7 @@ export default async function PageProduct({ params }: ProductPageProps) {
 
   return (
     <div className="container relative py-10">
-      <ProductStockCharts stock={data.product_stock}/>
+      <ProductStockCharts stock={data.product_stock} />
     </div>
   );
 }
