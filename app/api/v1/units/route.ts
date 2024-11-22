@@ -1,12 +1,35 @@
-import { getAllUnits } from "@/models/unit";
+import { auth } from "@/auth";
+import { NextResponse } from "next/server";
 
-export async function GET({ headers }: Request) {
-  const page = Number(headers.get("page")) || 1;
-  const perPage = Number(headers.get("perPage")) || 10;
+import UnitModel from "@/models/unit";
 
-  const units = await getAllUnits({ page, perPage });
+export const GET = auth(async (request) => {
+  if (!request.auth)
+    return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
 
-  console.log('api a', units)
+  const searchParams: any = Object.fromEntries(
+    new URLSearchParams(request.nextUrl.searchParams),
+  );
+  const Unit = new UnitModel();
+
+  const units = await Unit.getAllUnits(searchParams);
 
   return Response.json(units);
-}
+});
+
+export const POST = auth(async function POST(request) {
+  if (!request.auth || !request.auth.user?.id) {
+    return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
+  }
+
+  const Unit = new UnitModel();
+  const data = await request.json();
+
+  try {
+    const unit = await Unit.createUnit(data);
+
+    return Response.json(unit, { status: 201 });
+  } catch (error: any) {
+    return Response.json({ err: error.message }, { status: 409 });
+  }
+});

@@ -22,6 +22,14 @@ const nextConfig = {
     ];
     return config;
   },
+  experimental: {
+    serverActions: {
+      allowedOrigins: [
+        'localhost:3000', // localhost
+        'legendary-memory-xpggg955662g54-3000.app.github.dev', // Codespaces
+      ],
+    },
+  },
 };
 
 export default nextConfig;

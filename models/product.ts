@@ -1,90 +1,105 @@
+import { IProduct } from "knex/types/tables.js";
 import Base from "./base";
-import ProductHistoriesModel from "./product_histories";
-
-export interface IProduct {
-  id: number;
-  user_id: number;
-  unit_id?: number;
-  name: string;
-  description: string;
-  stock: number;
-  is_deleted: boolean;
-  created_at?: string;
-  updated_at?: string;
-}
 
 interface IProductQuery {
   name?: string;
   description?: string;
-  stock?: "asc" | "desc";
+  order_stock?: "asc" | "desc";
+  order_name?: "asc" | "desc";
 }
 
-interface IUpdateStock {
-  user_id: number;
-  product_id: number;
-  unit_id: number;
-  quantity: number;
-  ratio: string;
-  type: "INBOUND" | "OUTBOUND";
+interface ProductWithUnitName extends IProduct {
+  unit_name: string;
 }
 
 export default class ProductModel extends Base<IProduct> {
   static tableName = "products";
-}
 
-const Product = new ProductModel();
-export const ProductHistories = new ProductHistoriesModel();
+  private orderQuery(
+    params: {
+      page: number | string;
+      perPage: number | string;
+    } & IProductQuery,
+  ) {
+    const order = [{ column: "products.id", order: "asc" }];
 
-export async function getAllProducts(
-  q: IProductQuery,
-  paginate: { page: number; perPage: number }
-) {
-  const products = await Product.findAll("products.*", "units.name")
-    .where((builder) => {
-      if (q.name) {
-        builder.whereILike("name", `%${q.name}%`);
+    for (const entries of Object.entries(params)) {
+      if (entries[0].startsWith("order_")) {
+        order.unshift({
+          column: "products." + entries[0].slice(6),
+          order: entries[1],
+        });
       }
-      if (q.description) {
-        builder.orWhereILike("description", `%${q.description}%`);
-      }
-      if (q.stock) {
-        builder.orderBy("stock", q.stock);
-      }
-    })
-    .innerJoin("units", "products.unit_id", "units.id")
-    .paginate({
-      currentPage: paginate.page,
-      perPage: paginate.perPage,
-    });
+    }
 
-  return products;
-}
-
-export async function createProduct(data: Omit<IProduct, "id">) {
-  let product = await Product.query().whereILike("name", data.name);
-
-  if (product) {
-    throw new Error(`Product already created`);
+    return order;
   }
 
-  product = await Product.create(data);
+  public async getAllProducts(
+    params: {
+      page: number | string;
+      perPage: number | string;
+    } & IProductQuery,
+  ) {
+    const products = this.findAll<ProductWithUnitName>("products.*")
+      .select("units.name as unit_name")
+      .where((builder) => {
+        if (params.name) {
+          builder.whereILike("products.name", `%${params.name}%`);
+        }
+        if (params.description) {
+          builder.orWhereILike("description", `%${params.description}%`);
+        }
+      })
+      .orderBy(this.orderQuery(params))
+      .leftJoin("units", "products.unit_id", "units.id")
+      .paginate(Number(params.page || 1), Number(params.perPage || 10))
+      .then((data) => ({
+        ...data,
+        data: data.data.map(({ unit_name, ...product }) => ({
+          ...product,
+          unit: { name: unit_name },
+        })),
+      }));
 
-  return product;
-}
+    return products;
+  }
 
-export async function updateStock(data: IUpdateStock) {
-  const product = await Product.findById(data.product_id);
+  public async getProductById(id: number) {
+    const product = await this.findById(id).select("*");
 
-  const ratio = data.ratio.split(":");
-  const stock =
-    data.type === "INBOUND"
-      ? product.stock + Number(ratio[1]) * data.quantity
-      : product.stock - Number(ratio[1]) * data.quantity;
+    const stock = await this.db("product_stocks")
+      .select("*")
+      .where("product_id", id);
 
-  await Product.update(data.product_id, { stock });
-  await ProductHistories.create({
-    ...data,
-  });
+    const data = { ...product, product_stock: stock };
 
-  return product;
+    return data;
+  }
+
+  public async createProduct(data: Omit<Partial<IProduct>, "id">) {
+    let product = await this.query()
+      .select("id")
+      .where({ name: data.name, is_deleted: false })
+      .first();
+
+    if (product) {
+      throw new Error(`Esse produto já foi criada.`);
+    }
+
+    product = await this.create(data);
+
+    await this.db("product_stocks").insert({
+      product_id: product.id,
+      quantity: data.stock,
+    });
+
+    return product;
+  }
+
+  public async updateProduct(id: number, data: Omit<IProduct, "id">) {
+    const product = await this.update(id, data);
+
+    return product;
+  }
 }

@@ -1,24 +1,26 @@
 import { db } from "@/infra/database";
 import { Knex } from "knex";
 
-type InsertData<T> = T extends Knex.CompositeTableType<unknown>
-  ?
-      | Knex.ResolveTableType<T, "insert">
-      | ReadonlyArray<Knex.ResolveTableType<T, "insert">>
-  : Knex.DbRecordArr<T> | ReadonlyArray<Knex.DbRecordArr<T>>;
+type InsertData<T> =
+  T extends Knex.CompositeTableType<unknown>
+    ?
+        | Knex.ResolveTableType<T, "insert">
+        | ReadonlyArray<Knex.ResolveTableType<T, "insert">>
+    : Knex.DbRecordArr<T> | ReadonlyArray<Knex.DbRecordArr<T>>;
 
-type UpdateData<T> = T extends Knex.CompositeTableType<
-  unknown,
-  unknown,
-  Partial<unknown>,
-  Partial<unknown>
->
-  ? Knex.ResolveTableType<T, "update">
-  : Knex.DbRecordArr<T>;
+type UpdateData<T> =
+  T extends Knex.CompositeTableType<
+    unknown,
+    unknown,
+    Partial<unknown>,
+    Partial<unknown>
+  >
+    ? Knex.ResolveTableType<T, "update">
+    : Knex.DbRecordArr<T>;
 
 export default class Base<T extends object> {
   protected static tableName: string;
-  private db: Knex;
+  db: Knex;
   private table: string | undefined;
 
   constructor() {
@@ -26,52 +28,56 @@ export default class Base<T extends object> {
     this.table = (this.constructor as typeof Base).tableName || undefined;
   }
 
-  public query(): Knex.QueryBuilder<T> {
+  public query<K extends object = T>() {
     if (!this.table) {
       throw new Error(`table name is not defined`);
     }
-    return this.db<T>(this.table);
+    return this.db<K>(this.table);
   }
 
-  findAll(...columns: string[]): Knex.QueryBuilder<T> {
+  protected findAll<K extends object = T>(...columns: string[]) {
     const selectedColumns = columns.length > 0 ? columns : ["*"];
-    const findAllQuery = this.query().select(...selectedColumns);
+    const findAllQuery = this.query<K>().select(...selectedColumns);
 
     return findAllQuery;
   }
 
-  async findById(id: number) {
-    return this.query().where("id", id).first();
+  protected findById(id: number) {
+    const findByIdQuery = this.query().where("id", id).first();
+
+    return findByIdQuery;
   }
 
-  async create(data: InsertData<T>) {
-    await this.beforeCreate();
-
-    const created = await this.db<T>().insert(data).returning("*");
+  protected async create(data: InsertData<T>) {
+    const created = await this.query().insert(data).returning("*");
 
     return created[0];
   }
 
-  async update(id: number, data: UpdateData<T>) {
+  protected async update(id: number, data: UpdateData<T>) {
+    const findData = await this.findById(id).select("id");
+
+    if (!findData) {
+      throw new Error(`table row '${this.table}' not found!`);
+    }
+
     const updated = await this.query()
       .where("id", id)
       .update(data)
       .returning("*");
 
+    if (Array.isArray(data)) {
+      return updated;
+    }
+
     return updated[0];
   }
 
-  async delete(id: number): Promise<number> {
-    return this.query()
-      .where("id", id)
-      .update({ is_deleted: false } as any);
-  }
-
-  async drop(id: number): Promise<number> {
+  protected async drop(id: number): Promise<number> {
     return this.query().where("id", id).del();
   }
 
-  async beforeCreate() {
-    return;
+  public raw(value: Knex.Value) {
+    return this.db.raw(value);
   }
 }

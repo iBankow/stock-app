@@ -14,7 +14,7 @@ const config: Knex.Config = {
     user: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASSWORD,
   },
-  pool: { min: 1, max: 7 },
+  pool: { min: 0, max: 7 },
   migrations: {
     directory: "./infra/migrations/",
   },
@@ -23,3 +23,10 @@ const config: Knex.Config = {
   },
 };
 export default config;
+
+export const onUpdateTrigger = (table: string) => `
+CREATE TRIGGER ${table}_updated_at
+BEFORE UPDATE ON ${table}
+FOR EACH ROW
+EXECUTE PROCEDURE on_update_timestamp();
+`;
