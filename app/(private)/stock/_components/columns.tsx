@@ -8,12 +8,12 @@ export const columns: ColumnDef<IProductHistories>[] = [
   {
     accessorKey: "name",
     header: "Produto",
-    size: 200,
     accessorFn(props: any) {
       return props.product ? props.product.name : "--";
     },
     meta: {
-      cellClassName: "truncate",
+      headerClassName: "truncate w-[100px]",
+      cellClassName: "truncate w-[100px]",
     },
   },
   {
@@ -39,15 +39,44 @@ export const columns: ColumnDef<IProductHistories>[] = [
         </Badge>
       );
     },
+    meta: {
+      headerClassName: "hidden sm:table-cell",
+      cellClassName: "truncate hidden sm:table-cell",
+    },
+  },
+  {
+    accessorKey: "type_mobile",
+    header: "Tipo",
+    cell(props) {
+      return (
+        <Badge
+          variant={props.row.original.type === "INBOUND" ? "green" : "red"}
+        >
+          {props.row.original.type === "INBOUND" ? "<-" : "->"}
+        </Badge>
+      );
+    },
+    meta: {
+      headerClassName: "table-cell sm:hidden",
+      cellClassName: "truncate table-cell sm:hidden",
+    },
   },
   {
     accessorKey: "ratio",
     header: "Razão",
     accessorFn: (row) => `1:${row.ratio}`,
+    meta: {
+      headerClassName: "hidden md:table-cell",
+      cellClassName: "truncate hidden md:table-cell",
+    },
   },
   {
     accessorKey: "quantity",
     header: "Quantidade",
+    meta: {
+      headerClassName: "hidden md:table-cell",
+      cellClassName: "truncate hidden md:table-cell",
+    },
   },
   {
     accessorKey: "unity_quantity",
@@ -61,7 +90,8 @@ export const columns: ColumnDef<IProductHistories>[] = [
       return props.user.name ? props.user.name : "--";
     },
     meta: {
-      cellClassName: "truncate",
+      headerClassName: "hidden md:table-cell",
+      cellClassName: "truncate hidden md:table-cell",
     },
   },
   {
