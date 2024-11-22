@@ -1,5 +1,7 @@
+import { auth } from "@/auth";
+import { NextRequest, NextResponse } from "next/server";
+
 import ProductHistoriesModel from "@/models/product_histories";
-import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
   const searchParams: any = Object.fromEntries(
@@ -13,12 +15,19 @@ export async function GET(request: NextRequest) {
   return Response.json(productHistories);
 }
 
-export async function POST(request: Request) {
+export const POST = auth(async function POST(request) {
+  if (!request.auth || !request.auth.user?.id) {
+    return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
+  }
+
   const ProductHistories = new ProductHistoriesModel();
   const data = await request.json();
 
   try {
-    await ProductHistories.createProductHistories(data);
+    await ProductHistories.createProductHistories(
+      data,
+      Number(request.auth.user.id),
+    );
     return Response.json(true, { status: 201 });
   } catch (error: any) {
     return Response.json(
@@ -26,4 +35,4 @@ export async function POST(request: Request) {
       { status: 406 },
     );
   }
-}
+});

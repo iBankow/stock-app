@@ -1,3 +1,4 @@
+import { logout } from "@/app/actions/auth";
 import { CommandMenu } from "@/components/command-menu";
 import { MainNav } from "@/components/main-nav";
 import { MobileNav } from "@/components/mobile-nav";
@@ -15,6 +16,16 @@ export function SiteHeader() {
           </div>
           <nav className="flex items-center">
             <ModeToggle />
+          </nav>
+          <nav className="flex items-center">
+            <form
+              action={async () => {
+                "use server";
+                await logout();
+              }}
+            >
+              <button type="submit">Logout</button>
+            </form>
           </nav>
         </div>
       </div>

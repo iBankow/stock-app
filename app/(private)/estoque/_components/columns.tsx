@@ -55,14 +55,21 @@ export const columns: ColumnDef<IProductHistories>[] = [
     accessorFn: (row) => row.ratio * row.quantity,
   },
   {
+    accessorKey: "user",
+    header: "Atualizado por",
+    accessorFn(props: any) {
+      return props.user ? props.user.name : "--";
+    },
+    meta: {
+      cellClassName: "truncate",
+    },
+  },
+  {
     accessorKey: "created_at",
     header: "Criado em",
     accessorFn: (row) => {
       const date = row.created_at;
-      return format(
-        date ? date : "2024-10-22T13:51:24.159Z",
-        "dd/MM/yyyy 'às' HH:mm",
-      );
+      return format(date ? date : "2024-10-22T13:51:24.159Z", "dd/MM/yyyy");
     },
     meta: {
       headerClassName: "truncate hidden sm:table-cell",
