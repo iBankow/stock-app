@@ -76,4 +76,8 @@ export default class Base<T extends object> {
   protected async drop(id: number): Promise<number> {
     return this.query().where("id", id).del();
   }
+
+  public raw(value: Knex.Value) {
+    return this.db.raw(value);
+  }
 }
