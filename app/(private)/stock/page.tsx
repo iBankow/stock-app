@@ -6,6 +6,10 @@ import StockTable from "./_components/table";
 import { columns } from "./_components/columns";
 import { Plus } from "lucide-react";
 
+export const metadata = {
+  title: "Estoque",
+};
+
 export default async function Page(params: any) {
   const searchParams = await params.searchParams;
   const query = searchParams?.query || "";
@@ -14,12 +18,12 @@ export default async function Page(params: any) {
   return (
     <div className="container relative py-10">
       <div className="flex w-full flex-col gap-4">
-        <Link href={"estoque/atualizar-estoque"} passHref className="self-end">
+        <Link href={"stock/update-stock"} passHref className="self-end">
           <Button
             variant="outline"
-            className="h-8 w-full sm:w-[150px] lg:w-[250px] "
+            className="h-8 w-full sm:w-[150px] lg:w-[250px]"
           >
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="mr-2 h-4 w-4" />
             Atualizar Estoque
           </Button>
         </Link>

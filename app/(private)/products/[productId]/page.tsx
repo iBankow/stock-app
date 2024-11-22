@@ -1,4 +1,6 @@
+import ProductModel from "@/models/product";
 import { ProductStockCharts } from "./_components/charts";
+import type { Metadata } from "next";
 
 interface ProductPageProps {
   params: {
@@ -7,11 +9,21 @@ interface ProductPageProps {
 }
 
 async function getData(productId: string | number) {
-  const response = await fetch(
-    `http://localhost:3000/api/v1/products/` + productId,
-  ).then((response) => response.json());
+  const Product = new ProductModel();
 
-  return response;
+  const product = await Product.getProductById(Number(productId));
+
+  return product;
+}
+
+export async function generateMetadata({
+  params,
+}: ProductPageProps): Promise<Metadata> {
+  const { productId } = params;
+
+  const product = await getData(productId);
+
+  return { title: product.name };
 }
 
 export default async function PageProduct({ params }: ProductPageProps) {
@@ -21,7 +33,7 @@ export default async function PageProduct({ params }: ProductPageProps) {
 
   return (
     <div className="container relative py-10">
-      <ProductStockCharts stock={data.product_stock}/>
+      <ProductStockCharts stock={data.product_stock} />
     </div>
   );
 }

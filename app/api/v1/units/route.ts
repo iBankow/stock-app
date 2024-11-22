@@ -1,7 +1,12 @@
-import UnitModel from "@/models/unit";
-import { NextRequest } from "next/server";
+import { auth } from "@/auth";
+import { NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+import UnitModel from "@/models/unit";
+
+export const GET = auth(async (request) => {
+  if (!request.auth)
+    return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
+
   const searchParams: any = Object.fromEntries(
     new URLSearchParams(request.nextUrl.searchParams),
   );
@@ -10,9 +15,13 @@ export async function GET(request: NextRequest) {
   const units = await Unit.getAllUnits(searchParams);
 
   return Response.json(units);
-}
+});
 
-export async function POST(request: Request) {
+export const POST = auth(async function POST(request) {
+  if (!request.auth || !request.auth.user?.id) {
+    return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
+  }
+
   const Unit = new UnitModel();
   const data = await request.json();
 
@@ -23,4 +32,4 @@ export async function POST(request: Request) {
   } catch (error: any) {
     return Response.json({ err: error.message }, { status: 409 });
   }
-}
+});

@@ -4,6 +4,7 @@ import Base from "./base";
 interface IProductHistoriesWithJoins extends IProductHistories {
   unit_name: string;
   product_name: string;
+  user_name: string;
 }
 
 export default class ProductHistoriesModel extends Base<IProductHistories> {
@@ -19,17 +20,22 @@ export default class ProductHistoriesModel extends Base<IProductHistories> {
     )
       .select("products.name as product_name")
       .select("units.name as unit_name")
+      .select("users.name as user_name")
       .leftJoin("products", "product_histories.product_id", "products.id")
       .leftJoin("units", "product_histories.unit_id", "units.id")
+      .leftJoin("users", "product_histories.user_id", "users.id")
       .orderBy("id", "desc")
       .paginate(params.page, params.perPage)
       .then((data) => ({
         ...data,
-        data: data.data.map(({ unit_name, product_name, ...rest }) => ({
-          ...rest,
-          unit: { name: unit_name },
-          product: { name: product_name },
-        })),
+        data: data.data.map(
+          ({ user_name, unit_name, product_name, ...rest }) => ({
+            ...rest,
+            user: { name: user_name },
+            unit: { name: unit_name },
+            product: { name: product_name },
+          }),
+        ),
       }));
 
     return units;
@@ -37,6 +43,7 @@ export default class ProductHistoriesModel extends Base<IProductHistories> {
 
   public async createProductHistories(
     data: Omit<Partial<IProductHistories>[], "id">,
+    userId: number,
   ) {
     await this.db.transaction(async (trx) => {
       for (const history of data) {
@@ -61,7 +68,7 @@ export default class ProductHistoriesModel extends Base<IProductHistories> {
         }
 
         await this.db("product_histories")
-          .insert({ ...history })
+          .insert({ ...history, user_id: userId })
           .transacting(trx);
         await this.db("products")
           .where("id", history.product_id)
@@ -75,6 +82,7 @@ export default class ProductHistoriesModel extends Base<IProductHistories> {
         await this.db("product_stocks")
           .insert({
             product_id: history.product_id,
+            user_id: userId,
             quantity:
               history.type === "OUTBOUND"
                 ? product.stock - total

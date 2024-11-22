@@ -43,10 +43,10 @@ export function MainNav() {
           Unidades
         </Link>
         <Link
-          href="/estoque"
+          href="/stock"
           className={cn(
             "transition-colors hover:text-foreground/80",
-            pathname?.startsWith("/estoque")
+            pathname?.startsWith("/stock")
               ? activeLink
               : "text-foreground/60",
           )}

@@ -3,6 +3,10 @@ import { Suspense } from "react";
 import { SkeletonTable } from "@/components/ui/skeletons";
 import ProductsTable from "./_components/table";
 
+export const metadata = {
+  title: "Produtos",
+};
+
 export default async function PageProducts(params: any) {
   const searchParams = await params.searchParams;
   const query = searchParams?.query || "";
