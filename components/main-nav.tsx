@@ -5,9 +5,9 @@ import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 import { Icons } from "@/components/icons";
+import { navLinks } from "@/constants/menu";
 
-const activeLink = "text-foreground font-bold"
-
+const activeLink = "text-foreground font-bold";
 
 export function MainNav() {
   const pathname = usePathname();
@@ -22,37 +22,23 @@ export function MainNav() {
         <span className="hidden font-bold lg:inline-block">Tábua Criada</span>
       </Link>
       <nav className="flex items-center gap-4 text-sm lg:gap-6">
-        <Link
-          href="/products"
-          className={cn(
-            "transition-colors hover:text-foreground/80",
-            pathname === "/products" ? activeLink : "text-foreground/60",
-          )}
-        >
-          Produtos
-        </Link>
-        <Link
-          href="/units"
-          className={cn(
-            "transition-colors hover:text-foreground/80",
-            pathname?.startsWith("/units")
-              ? activeLink
-              : "text-foreground/60",
-          )}
-        >
-          Unidades
-        </Link>
-        <Link
-          href="/stock"
-          className={cn(
-            "transition-colors hover:text-foreground/80",
-            pathname?.startsWith("/stock")
-              ? activeLink
-              : "text-foreground/60",
-          )}
-        >
-          Estoque
-        </Link>
+        {navLinks.mainNav?.map(
+          (item) =>
+            item.href && (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "transition-colors hover:text-foreground/80",
+                  pathname.startsWith(item.href)
+                    ? activeLink
+                    : "text-foreground/60",
+                )}
+              >
+                {item.title}
+              </Link>
+            ),
+        )}
       </nav>
     </div>
   );
