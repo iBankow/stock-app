@@ -18,7 +18,7 @@ export default async function Page(params: any) {
   return (
     <div className="container relative py-10">
       <div className="flex w-full flex-col gap-4">
-        <Link href={"estoque/atualizar-estoque"} passHref className="self-end">
+        <Link href={"stock/update-stock"} passHref className="self-end">
           <Button
             variant="outline"
             className="h-8 w-full sm:w-[150px] lg:w-[250px]"

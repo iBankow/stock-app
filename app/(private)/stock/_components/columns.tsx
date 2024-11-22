@@ -58,7 +58,7 @@ export const columns: ColumnDef<IProductHistories>[] = [
     accessorKey: "user",
     header: "Atualizado por",
     accessorFn(props: any) {
-      return props.user ? props.user.name : "--";
+      return props.user.name ? props.user.name : "--";
     },
     meta: {
       cellClassName: "truncate",
