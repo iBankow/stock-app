@@ -15,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 
 interface IDataToolbarProps<TData> {
   table: Table<TData>;
@@ -41,8 +42,10 @@ export function DataTable<TData, TValue>({
   return (
     <div className="space-y-4">
       {Toolbar && <Toolbar table={table} />}
-      <div className="rounded-md border min-h-[600px]">
-        <UITable>
+      <div className="min-h-[600px] rounded-md border">
+        <UITable
+          className={cn(`${table.getRowModel().rows?.length < 1 && "h-[600px]"}`)}
+        >
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -65,7 +68,9 @@ export function DataTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody
-            className={`${table.getRowModel().rows?.length < 10 && "table-table-last-row"}`}
+            className={cn(
+              `${table.getRowModel().rows?.length < 10 && "table-table-last-row"}`,
+            )}
           >
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (

@@ -14,6 +14,7 @@ import { EditFormDialog } from "./edit-form-dialog";
 import { IProduct } from "knex/types/tables.js";
 import { useModal } from "@/hooks/use-modal";
 import { DeleteDialog } from "./delete-dialog";
+import Link from "next/link";
 
 interface ActionsProps {
   product: IProduct;
@@ -41,6 +42,11 @@ export function Actions({ product }: ActionsProps) {
           >
             Editar Produto
           </DropdownMenuItem>
+          <Link href={`/products/${product.id}`}>
+            <DropdownMenuItem className="cursor-pointer">
+              Histórico
+            </DropdownMenuItem>
+          </Link>
           <DropdownMenuItem
             className="cursor-pointer text-destructive"
             onSelect={deleteDialog.show}
